@@ -145,7 +145,6 @@ def processPublish(self,message):
 def processPuback(self,message):
     publish = self.timers.removeTimer(message.packetID)
     if publish is not None:
-        self.clientGUI.pubackReceived(publish.topic, publish.topic.getQoS(), publish.content, publish.dup, publish.retain, 0)
         print('Puback received topic=' + str(publish.topic)+' QoS=' + str(publish.topic.getQoS()) + ' content=' + str(publish.content))
 
 def processPubrec(self, message):
@@ -165,7 +164,6 @@ def processPubcomp(self,message):
     pubrel = self.timers.removeTimer(message.packetID)
     if pubrel is not None:
         publish = self.publishPackets.get(message.packetID)
-        self.clientGUI.pubackReceived(publish.topic, publish.topic.getQoS(), publish.content, publish.dup, publish.retain,0)
         print('Pubcomp puback received topic=' + str(publish.topic)+' QoS=' + str(publish.topic.getQoS()) + ' content=' + str(publish.content))
 
 def processPingresp(self,message):

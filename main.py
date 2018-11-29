@@ -1,8 +1,6 @@
 # Arduino_IoTclient
 # Created at 2018-11-21 17:39:59.994769
-import iot.mqtt.MQTTParser as MQTTParser
-import iot.timers.TimersMap as TimersMap
-import iot.network.TcpClient as TcpClient
+import iot.mqttsn.SNClient
 import iot.mqtt.MQTTClient as MQTTClient
 import config.configParser as configParser
 import streams
@@ -19,7 +17,7 @@ print('Config file Ok ')
 #____________________________________________________________________Ethernet
 import eth
 #from espressif.esp32net import esp32eth as eth_driver
-eth_driver.init()
+#eth_driver.init()
 print("Establishing Link...")
 try:
     eth.link()
@@ -44,4 +42,19 @@ if user.Protocol == 1: #MQTT
             client.publish(user.Topics, user.qos, str(temp), user.retain, user.dup)
             sleep(user.timeout*1000)
     else:
-        print('Error occured while connection...')
+        print('Error occured while connection (MQTT)...')
+elif user.Protocol == 2: #MQTTSN
+    client = SNClient.snClient(user)
+    client.goConnect()
+    if client.isConnected():
+        #___________________________________________________________Read_Temperature
+        while True:
+            sensorValue = adc.read(A0)
+            voltage = (sensorValue/4095)*5
+            #print('voltage: ' + str(voltage))
+            temp = (voltage -0.5)*100
+            #print('temp: ' + str(temp))
+            client.publish(user.Topics, user.qos, str(temp), user.retain, user.dup)
+            sleep(user.timeout*1000)
+    else:
+        print('Error occured while connection (MQTTSN)...')

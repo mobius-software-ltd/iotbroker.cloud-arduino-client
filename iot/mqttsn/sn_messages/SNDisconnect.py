@@ -1,6 +1,6 @@
 import iot.mqttsn.sn_classes.SNmessageType as SNmessageType
 
-class snDisonnect():
+class snDisconnect():
     def __init__(self, duration):
         self.duration = duration
 

@@ -2,7 +2,7 @@ import socket
 import ssl
 import iot.classes.ConnectionState as ConnectionState
 
-class tcpClient():
+class UDPClient():
     def __init__(self, host, port, client):
         self.host = host
         self.port = port
@@ -12,7 +12,7 @@ class tcpClient():
     def connectSecure(self, ssl_keyfile, ssl_certfile):
         context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
         context.load_cert_chain(certfile = ssl_certfile, keyfile = ssl_keyfile)
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(10)
         if len(ssl_keyfile)>0 and len(ssl_certfile)>0:
             self.connection = context.wrap_socket(sock)
@@ -20,13 +20,14 @@ class tcpClient():
             self.connection = ssl.wrap_socket(sock)
         self.connection.connect((self.host, self.port))
         print("Connected (secured) to {0}:{1}".format(self.host, self.port))
-        self.client.setState(ConnectionState.connectionState.getValueByKey('CONNECTION_ESTABLISHED'))
+        self.client.setState(ConnectionState.CONNECTION_ESTABLISHED)
 
     def connect(self):
-        self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        print("UDPClient_sockets connect")
+        self.connection = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.connection.connect((self.host, self.port))
         print("Connected to {0}:{1}".format(self.host,self.port))
-        self.client.setState(ConnectionState.connectionState.getValueByKey('CONNECTION_ESTABLISHED'))
+        self.client.setState(ConnectionState.CONNECTION_ESTABLISHED)
 
     def sendMessage(self, message):
         self.connection.send(message)
@@ -43,5 +44,3 @@ class tcpClient():
     def dataReceived(self, data):
         print("Server said:", data)
         self.client.dataReceived(data)
-
-
