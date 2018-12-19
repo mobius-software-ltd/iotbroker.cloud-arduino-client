@@ -1,6 +1,6 @@
 # Arduino_IoTclient
 # Created at 2018-11-21 17:39:59.994769
-
+import iot.amqp.AMQPclient as AMQPclient
 import iot.coap.CoapClient as CoapClient
 import iot.mqttsn.SNClient as SNClient
 import iot.mqtt.MQTTClient as MQTTClient
@@ -75,3 +75,19 @@ elif user.Protocol == 3: #COAP
             sleep(user.timeout*1000)
     else:
         print('Error occured while connection (COAP)...')
+elif user.Protocol == 4: #AMQP
+    client = AMQPclient.amqpClient(user)
+    client.goConnect()
+    if client.isConnected():
+        #___________________________________________________________Read_Temperature
+        while True:
+            sensorValue = adc.read(A0)
+            voltage = (sensorValue/4095)*5
+            #print('voltage: ' + str(voltage))
+            temp = (voltage -0.5)*100
+            #print('temp: ' + str(temp))
+            client.publish(user.Topics, user.qos, str(temp), user.retain, user.dup)
+            sleep(user.timeout*1000)
+    else:
+        print('Error occured while connection (AMQP)...')
+        

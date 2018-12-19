@@ -1,0 +1,2 @@
+class amqpOutcome():
+    pass
