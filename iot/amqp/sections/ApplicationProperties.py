@@ -9,6 +9,8 @@ import iot.amqp.avps.AMQPType as AMQPType
 class applicationProperties():
     def __init__(self, properties):
         self.properties = properties
+        self.amqpType = AMQPType.amqpType()
+        self.sectionCode = SectionCode.sectionCode()
 
     def getValue(self):
         map = TLVMap.tlvMap(None, None)
@@ -16,7 +18,7 @@ class applicationProperties():
         if self.properties is not None and len(self.properties) > 0:
             map = wrapper.wrapMap(self.properties)
 
-        constructor = DescribedConstructor.describedConstructor(map.getCode(), TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x74))
+        constructor = DescribedConstructor.describedConstructor(map.getCode(), TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x74))
         map.setConstructor(constructor)
         return map
 
@@ -26,7 +28,7 @@ class applicationProperties():
             self.annotations = unwrapper.unwrapMap(map)
 
     def getCode(self):
-        return SectionCode.sectionCode.getValueByKey('APPLICATION_PROPERTIES')
+        return self.sectionCode.getValueByKey('APPLICATION_PROPERTIES')
 
     def toString(self):
         return 'ApplicationProperties [properties=' + str(self.properties) + ']'

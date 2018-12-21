@@ -4,7 +4,8 @@ import struct
 
 class optionParser():
     def __init__(self):
-        pass
+        self.coapOptionType = CoapOptionType.coapOptionType()
+        self.coapOption = CoapOption.coapOption()
 
     def encode(self, type, value):
         encoded = self.encodeWithType(type, value)
@@ -13,11 +14,11 @@ class optionParser():
 
     def encodeWithType(self, type, value):
         encoded = bytearray()
-        if type == CoapOptionType.coapOptionType.getValueByKey('URI_PORT') or type == CoapOptionType.coapOptionType.getValueByKey('ACCEPT') or type == CoapOptionType.coapOptionType.getValueByKey('CONTENT_FORMAT'):
+        if type == self.coapOptionType.getValueByKey('URI_PORT') or type == self.coapOptionType.getValueByKey('ACCEPT') or type == self.coapOptionType.getValueByKey('CONTENT_FORMAT'):
             encoded = addShort(encoded, value)
-        if type == CoapOptionType.coapOptionType.getValueByKey('MAX_AGE') or type == CoapOptionType.coapOptionType.getValueByKey('SIZE1') or type == CoapOptionType.coapOptionType.getValueByKey('OBSERVE'):
+        if type == self.coapOptionType.getValueByKey('MAX_AGE') or type == self.coapOptionType.getValueByKey('SIZE1') or type == self.coapOptionType.getValueByKey('OBSERVE'):
             encoded = addInt(encoded, value)
-        if type == CoapOptionType.coapOptionType.getValueByKey('IF_MATCH') or type == CoapOptionType.coapOptionType.getValueByKey('ETAG') or type == CoapOptionType.coapOptionType.getValueByKey('NODE_ID') or type == CoapOptionType.coapOptionType.getValueByKey('URI_PATH') or type == CoapOptionType.coapOptionType.getValueByKey('LOCATION_PATH') or type == CoapOptionType.coapOptionType.getValueByKey('URI_QUERY') or type == CoapOptionType.coapOptionType.getValueByKey('LOCATION_QUERY') or type == CoapOptionType.coapOptionType.getValueByKey('URI_HOST') or type == CoapOptionType.coapOptionType.getValueByKey('PROXY_SCHEME') or type == CoapOptionType.coapOptionType.getValueByKey('PROXY_URI'):
+        if type == self.coapOptionType.getValueByKey('IF_MATCH') or type == self.coapOptionType.getValueByKey('ETAG') or type == self.coapOptionType.getValueByKey('NODE_ID') or type == self.coapOptionType.getValueByKey('URI_PATH') or type == self.coapOptionType.getValueByKey('LOCATION_PATH') or type == self.coapOptionType.getValueByKey('URI_QUERY') or type == self.coapOptionType.getValueByKey('LOCATION_QUERY') or type == self.coapOptionType.getValueByKey('URI_HOST') or type == self.coapOptionType.getValueByKey('PROXY_SCHEME') or type == self.coapOptionType.getValueByKey('PROXY_URI'):
             encoded = addString(encoded, value)
         return encoded
 
@@ -26,40 +27,40 @@ class optionParser():
         return self.decodeWithType(type,encoded.getValue())
 
     def decodeWithType(self, type, encoded):
-        if type == CoapOptionType.coapOptionType.getValueByKey('URI_PORT') or type == CoapOptionType.coapOptionType.getValueByKey('ACCEPT') or type == CoapOptionType.coapOptionType.getValueByKey('CONTENT_FORMAT'):
+        if type == self.coapOptionType.getValueByKey('URI_PORT') or type == self.coapOptionType.getValueByKey('ACCEPT') or type == self.coapOptionType.getValueByKey('CONTENT_FORMAT'):
             return getShort(encoded)
-        if type == CoapOptionType.coapOptionType.getValueByKey('MAX_AGE') or type == CoapOptionType.coapOptionType.getValueByKey('SIZE1') or type == CoapOptionType.coapOptionType.getValueByKey('OBSERVE'):
+        if type == self.coapOptionType.getValueByKey('MAX_AGE') or type == self.coapOptionType.getValueByKey('SIZE1') or type == self.coapOptionType.getValueByKey('OBSERVE'):
             return getInt(encoded)
 
-        if type == CoapOptionType.coapOptionType.getValueByKey('IF_MATCH') or type == CoapOptionType.coapOptionType.getValueByKey('ETAG') or type == CoapOptionType.coapOptionType.getValueByKey('NODE_ID') or type == CoapOptionType.coapOptionType.getValueByKey('URI_PATH') or type == CoapOptionType.coapOptionType.getValueByKey('LOCATION_PATH') or type == CoapOptionType.coapOptionType.getValueByKey('URI_QUERY') or type == CoapOptionType.coapOptionType.getValueByKey('LOCATION_QUERY') or type == CoapOptionType.coapOptionType.getValueByKey('URI_HOST') or type == CoapOptionType.coapOptionType.getValueByKey('PROXY_SCHEME') or type == CoapOptionType.coapOptionType.getValueByKey('PROXY_URI'):
+        if type == self.coapOptionType.getValueByKey('IF_MATCH') or type == self.coapOptionType.getValueByKey('ETAG') or type == self.coapOptionType.getValueByKey('NODE_ID') or type == self.coapOptionType.getValueByKey('URI_PATH') or type == self.coapOptionType.getValueByKey('LOCATION_PATH') or type == self.coapOptionType.getValueByKey('URI_QUERY') or type == self.coapOptionType.getValueByKey('LOCATION_QUERY') or type == self.coapOptionType.getValueByKey('URI_HOST') or type == self.coapOptionType.getValueByKey('PROXY_SCHEME') or type == self.coapOptionType.getValueByKey('PROXY_URI'):
             return getString(encoded)
 
-        if type == CoapOptionType.coapOptionType.getValueByKey('IF_NONE_MATCH'):
+        if type == self.coapOptionType.getValueByKey('IF_NONE_MATCH'):
             return bytearray()
 
     def validateLength(self, type, length):
-        if type == CoapOptionType.coapOptionType.getValueByKey('URI_PORT') or type == CoapOptionType.coapOptionType.getValueByKey('ACCEPT') or type == CoapOptionType.coapOptionType.getValueByKey('CONTENT_FORMAT'):
+        if type == self.coapOptionType.getValueByKey('URI_PORT') or type == self.coapOptionType.getValueByKey('ACCEPT') or type == self.coapOptionType.getValueByKey('CONTENT_FORMAT'):
             if length > 2:
                 print('Error.OptionParser.Invalid length 0-2: type = ' + str(type))
-        if type == CoapOptionType.coapOptionType.getValueByKey('MAX_AGE') or type == CoapOptionType.coapOptionType.getValueByKey('SIZE1') or type == CoapOptionType.coapOptionType.getValueByKey('OBSERVE'):
+        if type == self.coapOptionType.getValueByKey('MAX_AGE') or type == self.coapOptionType.getValueByKey('SIZE1') or type == self.coapOptionType.getValueByKey('OBSERVE'):
             if length > 4:
                 print('Error.OptionParser.Invalid length 0-4: type = ' + str(type))
-        if type == CoapOptionType.coapOptionType.getValueByKey('IF_MATCH'):
+        if type == self.coapOptionType.getValueByKey('IF_MATCH'):
             if length > 8:
                 print('Error.OptionParser.Invalid length 0-8: type = ' + str(type))
-        if type == CoapOptionType.coapOptionType.getValueByKey('ETAG'):
+        if type == self.coapOptionType.getValueByKey('ETAG'):
             if length > 8:
                 print('Error.OptionParser.Invalid length 1-8: type = ' + str(type))
-        if type == CoapOptionType.coapOptionType.getValueByKey('NODE_ID') or type == CoapOptionType.coapOptionType.getValueByKey('URI_PATH') or type == CoapOptionType.coapOptionType.getValueByKey('LOCATION_PATH') or type == CoapOptionType.coapOptionType.getValueByKey('URI_QUERY') or type == CoapOptionType.coapOptionType.getValueByKey('LOCATION_QUERY'):
+        if type == self.coapOptionType.getValueByKey('NODE_ID') or type == self.coapOptionType.getValueByKey('URI_PATH') or type == self.coapOptionType.getValueByKey('LOCATION_PATH') or type == self.coapOptionType.getValueByKey('URI_QUERY') or type == self.coapOptionType.getValueByKey('LOCATION_QUERY'):
             if length > 255:
                 print('Error.OptionParser.Invalid length 0-255: type = ' + str(type))
-        if type == CoapOptionType.coapOptionType.getValueByKey('URI_HOST') or type == CoapOptionType.coapOptionType.getValueByKey('PROXY_SCHEME'):
+        if type == self.coapOptionType.getValueByKey('URI_HOST') or type == self.coapOptionType.getValueByKey('PROXY_SCHEME'):
             if length == 0 or length > 255:
                 print('Error.OptionParser.Invalid length 1-255: type = ' + str(type))
-        if type == CoapOptionType.coapOptionType.getValueByKey('PROXY_URI'):
+        if type == self.coapOptionType.getValueByKey('PROXY_URI'):
             if length == 0 or length > 1034:
                 print('Error.OptionParser.Invalid length 1-1034: type = ' + str(type))
-        if type == CoapOptionType.coapOptionType.getValueByKey('IF_NONE_MATCH'):
+        if type == self.coapOptionType.getValueByKey('IF_NONE_MATCH'):
             if length > 0:
                 print('Error.OptionParser.Invalid length 0: type = ' + str(type))
 

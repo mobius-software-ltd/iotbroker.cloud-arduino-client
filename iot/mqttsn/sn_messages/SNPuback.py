@@ -5,12 +5,13 @@ class snPuback():
         self.topicID = topicID
         self.packetID = packetID
         self.code = code
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         return 7
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_PUBACK')
+        return self.snMessageType.getValueByKey('SN_PUBACK')
 
     def getTopicID(self):
         return self.topicID

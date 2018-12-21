@@ -10,6 +10,7 @@ class amqpModified():
         self.deliveryFailed = deliveryFailed
         self.undeliverableHere = undeliverableHere
         self.messageAnnotations = messageAnnotations
+        self.amqpType = AMQPType.amqpType()
 
     def toArgumentsList(self):
         list = TLVList.tlvList(None,None)
@@ -22,7 +23,7 @@ class amqpModified():
             if len(self.messageAnnotations) > 0:
                 list.addElement(2, wrapper.wrapMap(self.messageAnnotations))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x27))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x27))
         list.setConstructor(constructor)
         return list
 

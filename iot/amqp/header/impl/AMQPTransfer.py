@@ -12,10 +12,14 @@ import iot.amqp.wrappers.AMQPMessageFormat as AMQPMessageFormat
 
 class amqpTransfer():
     def __init__(self,code,doff,type,channel,handle,deliveryId,deliveryTag,messageFormat,settled,more,rcvSettleMode,state,resume,aborted,batchable,sections):
+        self.headerCode = HeaderCode.headerCode()
+        self.amqpType = AMQPType.amqpType()
+        self.sectionCode = SectionCode.sectionCode()
+
         if code is not None:
             self.code = code
         else:
-            self.code = HeaderCode.headerCode.getValueByKey('TRANSFER')
+            self.code = self.headerCode.getValueByKey('TRANSFER')
         if doff is not None:
             self.doff = doff
         else:
@@ -90,7 +94,7 @@ class amqpTransfer():
         if self.batchable is not None:
             list.addElement(10, wrapper.wrap(self.batchable))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
         list.setConstructor(constructor)
         return list
 
@@ -134,7 +138,7 @@ class amqpTransfer():
             element = list.getList()[7]
             if element is not None and not element.isNull():
                 code = element.getCode()
-                if code not in (AMQPType.amqpType.getValueByKey('LIST_0'),AMQPType.amqpType.getValueByKey('LIST_8'),AMQPType.amqpType.getValueByKey('LIST_32')):
+                if code not in (self.amqpType.getValueByKey('LIST_0'),self.amqpType.getValueByKey('LIST_8'),self.amqpType.getValueByKey('LIST_32')):
                     print("Expected type 'STATE' - received: " + str(element.getCode()))
                 self.state = HeaderFactoryOutcome.headerFactoryOutcome.getState(element)
                 self.state.fromArgumentsList(element)
@@ -228,54 +232,54 @@ class amqpTransfer():
 
     def getHeader(self):
         if self.sections is not None:
-            return self.sections[SectionCode.sectionCode.getValueByKey('HEADER')]
+            return self.sections[self.sectionCode.getValueByKey('HEADER')]
         else:
             return None
 
     def getDeliveryAnnotations(self):
         if self.sections is not None:
-            return self.sections[SectionCode.sectionCode.getValueByKey('DELIVERY_ANNOTATIONS')]
+            return self.sections[self.sectionCode.getValueByKey('DELIVERY_ANNOTATIONS')]
         else:
             return None
 
     def getMessageAnnotations(self):
         if self.sections is not None:
-            return self.sections[SectionCode.sectionCode.getValueByKey('MESSAGE_ANNOTATIONS')]
+            return self.sections[self.sectionCode.getValueByKey('MESSAGE_ANNOTATIONS')]
         else:
             return None
 
     def getProperties(self):
         if self.sections is not None:
-            return self.sections[SectionCode.sectionCode.getValueByKey('PROPERTIES')]
+            return self.sections[self.sectionCode.getValueByKey('PROPERTIES')]
         else:
             return None
 
     def getApplicationProperties(self):
         if self.sections is not None:
-            return self.sections[SectionCode.sectionCode.getValueByKey('APPLICATION_PROPERTIES')]
+            return self.sections[self.sectionCode.getValueByKey('APPLICATION_PROPERTIES')]
         else:
             return None
 
     def getData(self):
         if self.sections is not None:
-            return self.sections[SectionCode.sectionCode.getValueByKey('DATA')]
+            return self.sections[self.sectionCode.getValueByKey('DATA')]
         else:
             return None
 
     def getSequence(self):
         if self.sections is not None:
-            return self.sections[SectionCode.sectionCode.getValueByKey('SEQUENCE')]
+            return self.sections[self.sectionCode.getValueByKey('SEQUENCE')]
         else:
             return None
 
     def getValue(self):
         if self.sections is not None:
-            return self.sections[SectionCode.sectionCode.getValueByKey('VALUE')]
+            return self.sections[self.sectionCode.getValueByKey('VALUE')]
         else:
             return None
 
     def getFooter(self):
         if self.sections is not None:
-            return self.sections[SectionCode.sectionCode.getValueByKey('FOOTER')]
+            return self.sections[self.sectionCode.getValueByKey('FOOTER')]
         else:
             return None

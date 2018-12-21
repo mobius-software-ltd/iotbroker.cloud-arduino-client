@@ -8,11 +8,13 @@ import iot.amqp.tlv.impl.TLVList as TLVList
 
 class saslMechanisms():
     def __init__(self,code,doff,type,channel,mechanisms):
+        self.headerCode = HeaderCode.headerCode()
+        self.amqpType = AMQPType.amqpType()
 
         if code is not None:
             self.code = code
         else:
-            self.code = HeaderCode.headerCode.getValueByKey('MECHANISMS')
+            self.code = self.headerCode.getValueByKey('MECHANISMS')
         if doff is not None:
             self.doff = doff
         else:
@@ -55,7 +57,7 @@ class saslMechanisms():
             print("At least one SASL Mechanism must be specified")
         wrapper = AMQPWrapper.amqpWrapper()
         list.addElement(0,wrapper.wrapArray(self.mechanisms))
-        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x40))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x40))
         list.setConstructor(constructor)
         return list
 

@@ -9,7 +9,8 @@ class timerTask():
         self.status = None
         self.isTimeoutTask = False
         self.client = client
-        if self.client.connectionState == ConnectionState.connectionState.getValueByKey('CONNECTION_ESTABLISHED'):
+        self.connectionState = ConnectionState.connectionState()
+        if self.client.connectionState == self.connectionState.getValueByKey('CONNECTION_ESTABLISHED'):
             self.client.send(self.message)
         self.count = 5
 
@@ -37,7 +38,7 @@ class timerTask():
     def onTimedEvent(self):
         if self.isTimeoutTask == True:
             self.client.timeoutMethod()
-        if self.client.connectionState == ConnectionState.connectionState.getValueByKey('CONNECTION_ESTABLISHED'):
+        if self.client.connectionState == self.connectionState.getValueByKey('CONNECTION_ESTABLISHED'):
             if self.status == True:
                 if (self.message.getProtocol() == 1 and self.message.getType() == 3): #mqttPublish
                     self.message.dup = True

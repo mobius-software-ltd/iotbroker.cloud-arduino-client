@@ -3,6 +3,7 @@ import iot.mqttsn.sn_classes.SNmessageType as SNmessageType
 class snPingreq():
     def __init__(self, clientID):
         self.clientID = clientID
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         length = 2
@@ -11,7 +12,7 @@ class snPingreq():
         return length
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_PINGREQ')
+        return self.snMessageType.getValueByKey('SN_PINGREQ')
 
     def getClientID(self):
         return self.clientID

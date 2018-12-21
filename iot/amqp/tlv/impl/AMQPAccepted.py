@@ -5,11 +5,11 @@ import iot.amqp.tlv.impl.TLVFixed as TLVFixed
 
 class amqpAccepted():
     def __init__(self):
-        pass
+        self.amqpType = AMQPType.amqpType()
 
     def toArgumentsList(self):
         list = TLVList.tlvList(None,None);
-        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x24))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x24))
         list.setConstructor(constructor)
         return list
 

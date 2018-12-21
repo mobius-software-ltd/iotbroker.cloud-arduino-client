@@ -24,9 +24,10 @@ class mqttClient():
         self.data = None
         self.timers = TimersMap.timersMap(self)
         self.publishPackets = {}
+        self.connectionState = ConnectionState.connectionState()
 
     def send(self, message):
-        if self.connectionState == ConnectionState.connectionState.getValueByKey('CONNECTION_ESTABLISHED'):
+        if self.connectionState == self.connectionState.getValueByKey('CONNECTION_ESTABLISHED'):
             self.parser.setMessage(message)
             message = self.parser.encode()
             self.TcpClient.sendMessage(message)
@@ -41,14 +42,14 @@ class mqttClient():
         self.connectionState = ConnectionState
     
     def isConnected(self):
-        return self.connectionState == ConnectionState.connectionState.getValueByKey('CONNECTION_ESTABLISHED')
+        return self.connectionState == self.connectionState.getValueByKey('CONNECTION_ESTABLISHED')
 
     def closeChannel(self):
         if self.client != None:
             self.client.stop()
 
     def goConnect(self):
-        self.setState(ConnectionState.connectionState.getValueByKey('CONNECTING'))
+        self.setState(self.connectionState.getValueByKey('CONNECTING'))
         if self.account.willTopic is not None:
             topic = MQTTTopic.mqttTopic(self.account.willTopic, self.account.qos)
             will = Will.will(topic, self.account.will, self.account.isRetain)
@@ -105,7 +106,7 @@ class mqttClient():
             self.timers.stopAllTimers()
         if self.client != None:
             self.client.stop()
-            self.setState(ConnectionState.connectionState.getValueByKey('CONNECTION_LOST'))
+            self.setState(self.connectionState.getValueByKey('CONNECTION_LOST'))
 #__________________________________________________________________________________________
 
 def processConnack(self,message):

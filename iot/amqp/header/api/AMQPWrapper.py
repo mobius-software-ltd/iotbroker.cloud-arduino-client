@@ -9,7 +9,7 @@ import iot.amqp.numeric.NumericUtil as NumericUtil
 
 class amqpWrapper():
     def __init__(self):
-        pass
+        self.amqpType = AMQPType.amqpType()
 
     def wrap(self, obj):
         result = None
@@ -69,18 +69,18 @@ class amqpWrapper():
     def wrapBool(self, bool):
         value = bytearray()
         if bool:
-            code = AMQPType.amqpType.getValueByKey('BOOLEAN_TRUE')
+            code = self.amqpType.getValueByKey('BOOLEAN_TRUE')
         else:
-            code = AMQPType.amqpType.getValueByKey('BOOLEAN_FALSE')
+            code = self.amqpType.getValueByKey('BOOLEAN_FALSE')
         return TLVFixed.tlvFixed(code, value)
 
     def wrapUByte(self, bt):
         if bt < 0:
             print('Error negative value of ' + str(bt) + ' cannot be assigned to UBYTE type')
-        return TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('UBYTE'), bt)
+        return TLVFixed.tlvFixed(self.amqpType.getValueByKey('UBYTE'), bt)
 
     def wrapByte(self, bt):
-        return TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('BYTE'), bt)
+        return TLVFixed.tlvFixed(self.amqpType.getValueByKey('BYTE'), bt)
 
     def wrapUInt(self, i):
         if i < 0:
@@ -88,20 +88,20 @@ class amqpWrapper():
         value = self.convertUInt(i)
         code = None
         if len(value) == 0:
-            code = AMQPType.amqpType.getValueByKey('UINT_0')
+            code = self.amqpType.getValueByKey('UINT_0')
         elif len(value) == 1:
-            code = AMQPType.amqpType.getValueByKey('SMALL_UINT')
+            code = self.amqpType.getValueByKey('SMALL_UINT')
         elif len(value) > 1:
-            code = AMQPType.amqpType.getValueByKey('UINT')
+            code = self.amqpType.getValueByKey('UINT')
         return TLVFixed.tlvFixed(code, value)
 
     def wrapInt(self, i):
         value = self.convertUInt(i)
         code = None
         if len(value) > 0:
-            code = AMQPType.amqpType.getValueByKey('INT')
+            code = self.amqpType.getValueByKey('INT')
         else:
-            code = AMQPType.amqpType.getValueByKey('SMALL_INT')
+            code = self.amqpType.getValueByKey('SMALL_INT')
         return TLVFixed.tlvFixed(code, value)
 
     def wrapULong(self, l):
@@ -112,20 +112,20 @@ class amqpWrapper():
         value = self.convertULong(l)
         code = None
         if len(value) == 0:
-            code = AMQPType.amqpType.getValueByKey('ULONG_0')
+            code = self.amqpType.getValueByKey('ULONG_0')
         elif len(value) == 1:
-            code = AMQPType.amqpType.getValueByKey('SMALL_ULONG')
+            code = self.amqpType.getValueByKey('SMALL_ULONG')
         else:
-            code = AMQPType.amqpType.getValueByKey('ULONG')
+            code = self.amqpType.getValueByKey('ULONG')
         return TLVFixed.tlvFixed(code, value)
 
     def wrapLong(self, l):
         value = self.convertULong(l)
         code = None
         if len(value) > 1:
-            code = AMQPType.amqpType.getValueByKey('LONG')
+            code = self.amqpType.getValueByKey('LONG')
         else:
-            code = AMQPType.amqpType.getValueByKey('SMALL_LONG')
+            code = self.amqpType.getValueByKey('SMALL_LONG')
         return TLVFixed.tlvFixed(code, value)
 
     def wrapBinary(self, bt):
@@ -133,64 +133,64 @@ class amqpWrapper():
             print('Wrapper cannot wrap binary null')
         code = None
         if len(bt) > 255:
-            code = AMQPType.amqpType.getValueByKey('BINARY_32')
+            code = self.amqpType.getValueByKey('BINARY_32')
         else:
-            code = AMQPType.amqpType.getValueByKey('BINARY_8')
+            code = self.amqpType.getValueByKey('BINARY_8')
         return TLVFixed.tlvFixed(code, bt)
 
     def wrapUuid(self, uuid):
         if uuid is None:
             print('Wrapper cannot wrap uuid null')
-        return TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('UUID'), bytes(uuid, 'utf-8'))
+        return TLVFixed.tlvFixed(self.amqpType.getValueByKey('UUID'), bytes(uuid, 'utf-8'))
 
     def wrapUShort(self, sh):
         if sh < 0:
             print('negative value of ' + str(sh) + ' cannot be assignet to UShort type')
         data = bytearray()
         data = NumericUtil.util.addShort(data, sh)
-        return TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('USHORT'), data)
+        return TLVFixed.tlvFixed(self.amqpType.getValueByKey('USHORT'), data)
 
     def wrapShort(self, sh):
         data = bytearray()
         data = NumericUtil.util.addShort(data, sh)
-        return TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('USHORT'), data)
+        return TLVFixed.tlvFixed(self.amqpType.getValueByKey('USHORT'), data)
 
     def wrapDouble(self, db):
         data = bytearray()
         data = NumericUtil.util.addDouble(data, db)
-        return TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('DOUBLE'), data)
+        return TLVFixed.tlvFixed(self.amqpType.getValueByKey('DOUBLE'), data)
 
     def wrapFloat(self, f):
         data = bytearray()
         data = NumericUtil.util.addFloat(data, f)
-        return TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('FLOAT'), data)
+        return TLVFixed.tlvFixed(self.amqpType.getValueByKey('FLOAT'), data)
 
     def wrapChar(self, ch):
         data = bytearray()
         data = NumericUtil.util.addInt(data, ch)
-        return TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('CHAR'), data)
+        return TLVFixed.tlvFixed(self.amqpType.getValueByKey('CHAR'), data)
 
     def wrapTimestamp(self, stamp):
         if stamp is None:
             print('Wrapper cannot wrap timestamp null')
         data = bytearray()
         data = NumericUtil.util.addLong(data, stamp)
-        return TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('TIMESTAMP'), data)
+        return TLVFixed.tlvFixed(self.amqpType.getValueByKey('TIMESTAMP'), data)
 
     def wrapDecimal32(self, d):
         if d is None:
             print('Wrapper cannot wrap decimal32 null')
-        return TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('DECIMAL_32'), d.getValue())
+        return TLVFixed.tlvFixed(self.amqpType.getValueByKey('DECIMAL_32'), d.getValue())
 
     def wrapDecimal64(self, d):
         if d is None:
             print('Wrapper cannot wrap decimal64 null')
-        return TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('DECIMAL_64'), d.getValue())
+        return TLVFixed.tlvFixed(self.amqpType.getValueByKey('DECIMAL_64'), d.getValue())
 
     def wrapDecimal128(self, d):
         if d is None:
             print('Wrapper cannot wrap decimal128 null')
-        return TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('DECIMAL_128'), d.getValue())
+        return TLVFixed.tlvFixed(self.amqpType.getValueByKey('DECIMAL_128'), d.getValue())
 
     def wrapString(self, s):
         if s is None:
@@ -198,9 +198,9 @@ class amqpWrapper():
         value = bytes(s,'utf-8')
         code = None
         if len(value) > 255:
-            code = AMQPType.amqpType.getValueByKey('STRING_32')
+            code = self.amqpType.getValueByKey('STRING_32')
         else:
-            code = AMQPType.amqpType.getValueByKey('STRING_8')
+            code = self.amqpType.getValueByKey('STRING_8')
         return TLVVariable.tlvVariable(code, value)
 
     def wrapSymbol(self, s):
@@ -209,9 +209,9 @@ class amqpWrapper():
         value = bytes(s.getValue(),'utf-8')
         code = None
         if len(value) > 255:
-            code = AMQPType.amqpType.getValueByKey('SYMBOL_32')
+            code = self.amqpType.getValueByKey('SYMBOL_32')
         else:
-            code = AMQPType.amqpType.getValueByKey('SYMBOL_8')
+            code = self.amqpType.getValueByKey('SYMBOL_8')
         return TLVVariable.tlvVariable(code, value)
 
     def wrapList(self, input):

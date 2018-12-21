@@ -4,6 +4,7 @@ class willTopic():
     def __init__(self, retain, topic):
         self.retain = retain
         self.topic = topic
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         length = 2
@@ -14,7 +15,7 @@ class willTopic():
         return length
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_WILL_TOPIC')
+        return self.snMessageType.getValueByKey('SN_WILL_TOPIC')
 
     def isRetain(self):
         return self.retain

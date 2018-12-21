@@ -8,10 +8,13 @@ import iot.amqp.tlv.impl.TLVList as TLVList
 
 class amqpFlow():
     def __init__(self,code,doff,type,channel,nextIncomingId,incomingWindow,nextOutgoingId,outgoingWindow,handle,deliveryCount,linkCredit,available,drain,echo,properties):
+        self.headerCode = HeaderCode.headerCode()
+        self.amqpType = AMQPType.amqpType()
+
         if code is not None:
             self.code = code
         else:
-            self.code =  HeaderCode.headerCode.getValueByKey('FLOW')
+            self.code =  self.headerCode.getValueByKey('FLOW')
         if doff is not None:
             self.doff = doff
         else:
@@ -99,7 +102,7 @@ class amqpFlow():
         if self.properties is not None and len(self.properties) > 0:
             list.addElement(10, wrapper.wrapMap(self.properties))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
         list.setConstructor(constructor)
         return list
 

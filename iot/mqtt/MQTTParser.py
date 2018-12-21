@@ -100,7 +100,7 @@ def MQ_CONNECT(self, message):
         data += struct.pack('c', ch)
     if message.willValid() == True:
         topic = message.will.getTopic()
-        if topic.getType == 'MQTT_TOPIC_TYPE':
+        if topic.getType() == 'MQTT_TOPIC_TYPE':
             if topic.getName():
                 topicName = topic.getName()
                 nameData = struct.pack('h', len(topicName))

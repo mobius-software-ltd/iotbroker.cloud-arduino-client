@@ -36,9 +36,13 @@ class snClient():
         self.registerID = 0
         self.publishPackets = {}
         self.topics = {}
+        self.connectionStateEnum = ConnectionState.connectionState()
+        self.snMessageType = SNmessageType.snMessageType()
+        self.returnCode = ReturnCode.returnCode()
+        self.QosType = QosType.qosType()
 
     def send(self, message):
-        if self.connectionState == ConnectionState.connectionState.getValueByKey('CONNECTION_ESTABLISHED'):
+        if self.connectionState == self.connectionStateEnum.getValueByKey('CONNECTION_ESTABLISHED'):
             self.parser.setMessage(message)
             message = self.parser.encode()
             self.udpClient.sendMessage(message)
@@ -56,7 +60,7 @@ class snClient():
         return self.connectionState
 
     def goConnect(self):
-        self.setState(ConnectionState.connectionState.getValueByKey('CONNECTING'))
+        self.setState(self.connectionStateEnum.getValueByKey('CONNECTING'))
 
         if self.account.will is not None and len(self.account.will)> 0:
             willPresent = True
@@ -123,13 +127,16 @@ class snClient():
             self.timers.stopAllTimers()
         if self.client != None:
             self.client.stop()
-            self.setState(ConnectionState.connectionState.getValueByKey('CONNECTION_LOST'))
+            self.setState(self.connectionStateEnum.getValueByKey('CONNECTION_LOST'))
 
     def connected(self):
-        self.setState(ConnectionState.connectionState.getValueByKey('CHANNEL_ESTABLISHED'))
+        self.setState(self.connectionStateEnum.getValueByKey('CHANNEL_ESTABLISHED'))
 
     def connectFailed(self):
-        self.setState(ConnectionState.connectionState.getValueByKey('CHANNEL_FAILED'))
+        self.setState(self.connectionStateEnum.getValueByKey('CHANNEL_FAILED'))
+        
+    def isConnected(self):
+        return self.connectionState == self.connectionState.getValueByKey('CONNECTION_ESTABLISHED')
 
 #__________________________________________________________________________________________
 def processADVERTISE(self,message):
@@ -145,7 +152,7 @@ def processCONNECT(self,message):
     print('Packet Connect did receive')
 
 def processCONNACK(self,message):
-    self.setState(ConnectionState.connectionState.getValueByKey('CONNECTION_ESTABLISHED'))
+    self.setState(self.connectionStateEnum.getValueByKey('CONNECTION_ESTABLISHED'))
     self.timers.stopConnectTimer()
     self.timers.goPingTimer(SNPingreq.snPingreq(self.account.clientID), self.account.keepAlive)
     print('Connack received code= ' + str(message.getCode()))
@@ -171,32 +178,32 @@ def processWILL_MSG(self,message):
     print('Packet Will msg did receive')
 
 def processREGISTER(self,message):
-    if message.getType == SNmessageType.snMessageType.getValueByKey('SN_REGISTER'):
-        regack = Regack.regack(message.getTopicID(), message.getPacketID(), ReturnCode.returnCode.getValueByKey('ACCEPTED'))
+    if message.getType == self.snMessageType.getValueByKey('SN_REGISTER'):
+        regack = Regack.regack(message.getTopicID(), message.getPacketID(), self.returnCode.getValueByKey('ACCEPTED'))
         self.send(regack)
 
 def processREGACK(self,message):
     self.timers.stopTimer(self.registerID) #stop registerTimer
-    if message.getType == SNmessageType.snMessageType.getValueByKey('SN_REGACK'):
-        if message.getCode() == ReturnCode.returnCode.getValueByKey('ACCEPTED'):
+    if message.getType == self.snMessageType.getValueByKey('SN_REGACK'):
+        if message.getCode() == self.returnCode.getValueByKey('ACCEPTED'):
             publish = self.forPublish[message.getPacketID()]
             if publish is not None:
                 self.topics[message.getTopicID()] = publish.getTopic().getValue()
                 topic = IdentifierTopic(message.getTopicID(),publish.getTopic().getQoS())
                 publish.setPacketID(message.getPacketID())
                 publish.setTopic(topic)
-                if publish.getTopic().getQoS().getValue() ==  QosType.qosType.getValueByKey('AT_MOST_ONCE'):
+                if publish.getTopic().getQoS().getValue() ==  self.qosType.getValueByKey('AT_MOST_ONCE'):
                     self.send(publish)
                 else:
                     self.timers.goMessageTimer(publish)
 
 def processPUBLISH(self,message):
-    if message.getType == SNmessageType.snMessageType.getValueByKey('SN_PUBLISH'):
-        if message.getTopic().getQoS() == QosType.qosType.getValueByKey('AT_LEAST_ONCE'):
+    if message.getType == self.snMessageType.getValueByKey('SN_PUBLISH'):
+        if message.getTopic().getQoS() == self.qosType.getValueByKey('AT_LEAST_ONCE'):
             topicID = int(message.getTopic().getValue())
-            puback = SNPuback.snPuback(topicID, message.getPacketID(), ReturnCode.returnCode.getValueByKey('ACCEPTED'))
+            puback = SNPuback.snPuback(topicID, message.getPacketID(), self.returnCode.getValueByKey('ACCEPTED'))
             self.send(puback)
-        elif message.getTopic().getQoS() == QosType.qosType.getValueByKey('EXACTLY_ONCE'):
+        elif message.getTopic().getQoS() == self.qosType.getValueByKey('EXACTLY_ONCE'):
             pubrec = SNPubrec.snPubrec(message.getPacketID())
             self.publishPackets[message.getPacketID()] = message
             self.timers.goMessageTimer(pubrec)
@@ -208,7 +215,7 @@ def processPUBLISH(self,message):
 
 def processPUBACK(self, message):
     publish = self.timers.removeTimer(message.getPacketID())
-    if publish is not None and message.getType == SNmessageType.snMessageType.getValueByKey('SN_PUBLISH'):
+    if publish is not None and message.getType == self.snMessageType.getValueByKey('SN_PUBLISH'):
         topic = publish.getTopic()
         qos = topic.getQoS()
         topicName = self.topics[int(topic.getValue())]
@@ -218,9 +225,9 @@ def processPUBACK(self, message):
 
 def processPUBCOMP(self, message):
     pubcomp = self.timers.removeTimer(message.getPacketID())
-    if pubcomp is not None and message.getType == SNmessageType.snMessageType.getValueByKey('SN_PUBCOMP'):
+    if pubcomp is not None and message.getType == self.snMessageType.getValueByKey('SN_PUBCOMP'):
         publish = self.publishPackets.get(message.getPacketID())
-        if publish is not None and message.getType == SNmessageType.snMessageType.getValueByKey('SN_PUBLISH'):
+        if publish is not None and message.getType == self.snMessageType.getValueByKey('SN_PUBLISH'):
             topic = publish.getTopic()
             qos = Qos.qos(topic.getQoS())
             topicName = self.topics[int(topic.getValue())]
@@ -229,7 +236,7 @@ def processPUBCOMP(self, message):
             self.publishPackets[pubcomp.getPacketID()] = None
 
 def processPUBREC(self, message):
-    if message.getType == SNmessageType.snMessageType.getValueByKey('SN_PUBREC'):
+    if message.getType == self.snMessageType.getValueByKey('SN_PUBREC'):
         publish = self.timers.removeTimer(message.getPacketID())
         if publish is not None:
             self.publishPackets[message.getPacketID()] = publish
@@ -237,10 +244,10 @@ def processPUBREC(self, message):
             self.timers.goMessageTimer(pubrel)
 
 def processPUBREL(self, message):
-    if message.getType == SNmessageType.snMessageType.getValueByKey('SN_PUBREL'):
+    if message.getType == self.snMessageType.getValueByKey('SN_PUBREL'):
         self.timers.removeTimer(message.getPacketID())
         publish = self.publishPackets[message.getPacketID()]
-        if publish is not None and message.getType == SNmessageType.snMessageType.getValueByKey('SN_PUBLISH'):
+        if publish is not None and message.getType == self.snMessageType.getValueByKey('SN_PUBLISH'):
             pubComp = SNPubcomp.snPubcomp(message.getPacketID())
             self.send(pubComp)
             topic = publish.getTopic()
@@ -253,9 +260,9 @@ def processSUBSCRIBE(self, message):
     print('Packet Subscribe did receive')
 
 def processSUBACK(self, message):
-    if message.getType == SNmessageType.snMessageType.getValueByKey('SN_SUBACK'):
+    if message.getType == self.snMessageType.getValueByKey('SN_SUBACK'):
         subscribe = self.timers.removeTimer(message.getPacketID())
-        if subscribe is not None and message.getType == SNmessageType.snMessageType.getValueByKey('SN_SUBSCRIBE'):
+        if subscribe is not None and message.getType == self.snMessageType.getValueByKey('SN_SUBSCRIBE'):
             self.topics[message.getPacketID()] = subscribe.getTopic().getValue()
             print('Suback Received')
 
@@ -263,9 +270,9 @@ def processUNSUBSCRIBE(self, message):
     print('Packet Unsubscribe did receive')
 
 def processUNSUBACK(self, message):
-    if message.getType == SNmessageType.snMessageType.getValueByKey('SN_UNSUBACK'):
+    if message.getType == self.snMessageType.getValueByKey('SN_UNSUBACK'):
         unsubscribe = self.timers.removeTimer(message.getPacketID())
-        if unsubscribe is not None and message.getType == SNmessageType.snMessageType.getValueByKey('SN_UNSUBSCRIBE'):
+        if unsubscribe is not None and message.getType == self.snMessageType.getValueByKey('SN_UNSUBSCRIBE'):
             list = []
             list.append(unsubscribe.getTopic().getValue())
             print('Unsuback received')

@@ -13,6 +13,8 @@ class messageHeader():
         self.milliseconds = milliseconds
         self.firstAquirer = firstAquirer
         self.deliveryCount = deliveryCount
+        self.amqpType = AMQPType.amqpType()
+        self.sectionCode = SectionCode.sectionCode()
 
     def getValue(self):
         list = TLVList.tlvList(None, None)
@@ -28,7 +30,7 @@ class messageHeader():
         if self.deliveryCount is not None:
             list.addElement(4, wrapper.wrap(self.deliveryCount))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x70))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x70))
         list.setConstructor(constructor)
         return list
 
@@ -57,7 +59,7 @@ class messageHeader():
                 self.deliveryCount = unwrapper.unwrapUInt(element)
 
     def getCode(self):
-        return SectionCode.sectionCode.getValueByKey('HEADER')
+        return self.sectionCode.getValueByKey('HEADER')
 
     def toString(self):
         return 'MessageHeader [durable=' + str(self.durable) + ', priority=' + str(self.priority) + ', milliseconds=' + str(self.milliseconds) + ', firstAquirer=' + str(self.firstAquirer) + ', deliveryCount=' + str(self.deliveryCount) + ']'

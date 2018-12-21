@@ -9,10 +9,13 @@ from crypto.hash import md5 as md5
 
 class saslResponse():
     def __init__(self,code,doff,type,channel,response):
+        self.headerCode = HeaderCode.headerCode()
+        self.amqpType = AMQPType.amqpType()
+
         if code is not None:
             self.code = code
         else:
-            self.code = HeaderCode.headerCode.getValueByKey('RESPONSE')
+            self.code = self.headerCode.getValueByKey('RESPONSE')
         if doff is not None:
             self.doff = doff
         else:
@@ -55,7 +58,7 @@ class saslResponse():
             print("SASL-Response header's challenge can't be null")
         list.addElement(0,wrapper.wrap(self.response))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x43))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x43))
         list.setConstructor(constructor)
         return list
 

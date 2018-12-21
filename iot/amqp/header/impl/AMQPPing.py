@@ -2,7 +2,8 @@ import iot.amqp.avps.HeaderCode as HeaderCode
 
 class amqpPing():
     def __init__(self):
-        self.code = HeaderCode.headerCode.getValueByKey('PING')
+        self.headerCode = HeaderCode.headerCode()
+        self.code = self.headerCode.getValueByKey('PING')
         self.doff = 2
         self.type = 0
         self.channel = 0

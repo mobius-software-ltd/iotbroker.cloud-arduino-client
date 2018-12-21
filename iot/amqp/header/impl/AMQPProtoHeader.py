@@ -3,8 +3,9 @@ import iot.amqp.numeric.NumericUtil as NumericUtil
 
 class amqpProtoHeader():
     def __init__(self,protocolId):
+        self.headerCode = HeaderCode.headerCode()
         self.protocol = 'AMQP'
-        self.code = HeaderCode.headerCode.getValueByKey('PROTO')
+        self.code = self.headerCode.getValueByKey('PROTO')
         self.doff = 2
         self.type = 0
         self.channel = 0

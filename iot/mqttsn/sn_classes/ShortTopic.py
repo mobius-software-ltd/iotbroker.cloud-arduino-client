@@ -4,9 +4,10 @@ class ShortTopic():
     def __init__(self, value, qos):
         self.value = value
         self.qos = qos
+        self.topicTypeEnum = TopicType.topicType()
 
     def getType(self):
-        return TopicType.topicType.getValueByKey('SHORT')
+        return self.topicTypeEnum.getValueByKey('SHORT')
 
     def getLength(self):
         return 2

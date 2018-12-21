@@ -5,6 +5,7 @@ class snSubscribe():
         self.packetID = packetID
         self.topic = topic
         self.dup = dup
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         length = 5
@@ -15,7 +16,7 @@ class snSubscribe():
         return length
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_SUBSCRIBE')
+        return self.snMessageType.getValueByKey('SN_SUBSCRIBE')
 
     def getPacketID(self):
         return self.packetID

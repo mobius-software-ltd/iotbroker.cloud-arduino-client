@@ -9,10 +9,13 @@ import iot.amqp.tlv.impl.TLVList as TLVList
 
 class amqpDisposition():
     def __init__(self,code,doff,type,channel,role,first,last,settled,state,batchable):
+        self.headerCode = HeaderCode.headerCode()
+        self.amqpType = AMQPType.amqpType()
+
         if code is not None:
             self.code = code
         else:
-            self.code = HeaderCode.headerCode.getValueByKey('DISPOSITION')
+            self.code = self.headerCode.getValueByKey('DISPOSITION')
         if doff is not None:
             self.doff = doff
         else:
@@ -71,7 +74,7 @@ class amqpDisposition():
         if self.batchable is not None and len(self.outgoingLocales) > 0:
             list.addElement(5, wrapper.wrap(self.batchable))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
         list.setConstructor(constructor)
         return list
 
@@ -105,7 +108,7 @@ class amqpDisposition():
             element = list.getList()[4]
             if element is not None and not element.isNull():
                 code  = element.getCode()
-                if code not in (AMQPType.amqpType.getValueByKey('LIST_0'),AMQPType.amqpType.getValueByKey('LIST_8'),AMQPType.amqpType.getValueByKey('LIST_32')):
+                if code not in (self.amqpType.getValueByKey('LIST_0'),self.amqpType.getValueByKey('LIST_8'),self.amqpType.getValueByKey('LIST_32')):
                     print('Expected type STATE - received: ' + str(element.getCode()))
                 self.state = HeaderFactoryOutcome.headerFactoryOutcome.getState(element)
                 self.state.fromArgumentsList(element)

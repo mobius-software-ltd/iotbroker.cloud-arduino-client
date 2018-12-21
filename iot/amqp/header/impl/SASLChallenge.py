@@ -8,10 +8,13 @@ import iot.amqp.tlv.impl.TLVList as TLVList
 
 class saslChallenge():
     def __init__(self,code,doff,type,channel,challenge):
+        self.headerCode = HeaderCode.headerCode()
+        self.amqpType = AMQPType.amqpType()
+
         if code is not None:
             self.code = code
         else:
-            self.code = HeaderCode.headerCode.getValueByKey('CHALLENGE')
+            self.code = self.headerCode.getValueByKey('CHALLENGE')
         if doff is not None:
             self.doff = doff
         else:
@@ -54,7 +57,7 @@ class saslChallenge():
             print("SASL-Challenge header's challenge can't be null")
         list.addElement(0,AMQPWrapper.amqpWrapper.wrap(self.challenge))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x42))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x42))
         list.setConstructor(constructor)
         return list
 

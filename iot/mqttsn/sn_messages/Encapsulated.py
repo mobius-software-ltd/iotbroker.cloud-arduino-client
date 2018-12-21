@@ -5,6 +5,7 @@ class encapsulated():
         self.radius = radius
         self.wirelessNodeID = wirelessNodeID
         self.message = message
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         length = 3
@@ -13,7 +14,7 @@ class encapsulated():
         return length
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_ENCAPSULATED')
+        return self.snMessageType.getValueByKey('SN_ENCAPSULATED')
 
     def getRadius(self):
         return self.radius

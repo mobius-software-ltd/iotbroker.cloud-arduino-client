@@ -16,6 +16,7 @@ class amqpTarget():
         self.dynamic = dynamic
         self.dynamicNodeProperties = dynamicNodeProperties
         self.capabilities = capabilities
+        self.amqpType = AMQPType.amqpType()
 
     def toArgumentsList(self):
         list = TLVList.tlvList(None,None)
@@ -44,7 +45,7 @@ class amqpTarget():
         if self.capabilities is not None and len(self.capabilities) > 0:
             list.addElement(6, wrapper.wrapArray(self.capabilities))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x29))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x29))
         list.setConstructor(constructor)
         return list
 

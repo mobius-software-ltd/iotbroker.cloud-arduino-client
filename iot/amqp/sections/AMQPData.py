@@ -9,6 +9,8 @@ import iot.amqp.tlv.impl.TLVFixed as TLVFixed
 class amqpData():
     def __init__(self, data):
         self.data = data
+        self.amqpType = AMQPType.amqpType()
+        self.sectionCode = SectionCode.sectionCode()
 
     def getValue(self):
         wrapper = AMQPWrapper.amqpWrapper()
@@ -17,7 +19,7 @@ class amqpData():
             bin = wrapper.wrap(self.data)
         else:
             bin = TLVNull.tlvNull()
-        constructor = DescribedConstructor.describedConstructor(bin.getCode(), TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x75))
+        constructor = DescribedConstructor.describedConstructor(bin.getCode(), TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x75))
         bin.setConstructor(constructor)
         return bin
 
@@ -27,7 +29,7 @@ class amqpData():
             self.data = unwrapper.unwrapBinary(value)
 
     def getCode(self):
-        return SectionCode.sectionCode.getValueByKey('DATA')
+        return self.sectionCode.getValueByKey('DATA')
 
     def toString(self):
         return 'AMQPData [data=' + str(self.data) + ']'

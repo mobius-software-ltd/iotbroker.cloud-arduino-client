@@ -4,9 +4,10 @@ class identifierTopic():
     def __init__(self, value, qos):
         self.value = value
         self.qos = qos
+        self.topicTypeEnum = TopicType.topicType()
 
     def getType(self):
-        return TopicType.topicType.getValueByKey('ID')
+        return self.topicTypeEnum.getValueByKey('ID')
 
     def getLength(self):
         return 2

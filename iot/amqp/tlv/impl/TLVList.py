@@ -8,16 +8,17 @@ import iot.amqp.tlv.impl.TLVList as TLVList
 
 class tlvList():
     def __init__(self, code, values):
+        self.amqpType = AMQPType.amqpType()
         if code is None or values is None:
             self.width = 0
             self.count = 0
             self.size = 0
             self.values = []
-            self.constructor = SimpleConstructor.simpleConstructor(AMQPType.amqpType.getValueByKey('LIST_0'))
+            self.constructor = SimpleConstructor.simpleConstructor(self.amqpType.getValueByKey('LIST_0'))
         else:
             self.values = values
             self.size = 0
-            if code == AMQPType.amqpType.getValueByKey('LIST_8'):
+            if code == self.amqpType.getValueByKey('LIST_8'):
                 self.width = 1
             else:
                 self.width = 4
@@ -29,14 +30,14 @@ class tlvList():
 
     def update(self):
         if self.width == 1 and self.size > 255:
-            self.constructor.setCode(AMQPType.amqpType.getValueByKey('LIST_32'))
+            self.constructor.setCode(self.amqpType.getValueByKey('LIST_32'))
             self.width = 4
             self.size += 3
 
     def addElement(self, index, element):
         if index is None or index == 0:
             if self.size == 0:
-                self.constructor.setCode(AMQPType.amqpType.getValueByKey('LIST_8'))
+                self.constructor.setCode(self.amqpType.getValueByKey('LIST_8'))
                 self.width = 1
                 self.size += 1
             self.count += 1
@@ -138,7 +139,7 @@ class tlvList():
     def isNull(self):
         if self.constructor.getType() == 'simple': 
             code = self.constructor.getCode()
-            if code == AMQPType.amqpType.getValueByKey('NULL'):
+            if code == self.amqpType.getValueByKey('NULL'):
                 return True
             else:
                 return False

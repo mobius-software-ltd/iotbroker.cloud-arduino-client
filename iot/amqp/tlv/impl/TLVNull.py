@@ -3,7 +3,8 @@ import iot.amqp.constructor.SimpleConstructor as SimpleConstructor
 
 class tlvNull():
     def __init__(self):
-        self.constructor = SimpleConstructor(AMQPType.amqpType.getValueByKey('NULL'))
+        self.amqpType = AMQPType.amqpType()
+        self.constructor = SimpleConstructor(self.amqpType.getValueByKey('NULL'))
 
     def getBytes(self):
         return self.constructor.getBytes()

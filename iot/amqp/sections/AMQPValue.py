@@ -9,6 +9,8 @@ import iot.amqp.avps.AMQPType as AMQPType
 class amqpValue():
     def __init__(self, value):
         self.value = value
+        self.amqpType = AMQPType.amqpType()
+        self.sectionCode = SectionCode.sectionCode()
 
     def getValue(self):
         val = None
@@ -19,7 +21,7 @@ class amqpValue():
             val = TLVNull.tlvNull()
 
         if val is not None:
-            constructor = DescribedConstructor.describedConstructor(val.getCode(), TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x77))
+            constructor = DescribedConstructor.describedConstructor(val.getCode(), TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x77))
             val.setConstructor(constructor)
         return val
 
@@ -29,7 +31,7 @@ class amqpValue():
             self.value = unwrapper.unwrap(value)
 
     def getCode(self):
-        return SectionCode.sectionCode.getValueByKey('VALUE')
+        return self.sectionCode.getValueByKey('VALUE')
 
     def toString(self):
         return 'AMQPValue [value=' + str(self.value) + ']'

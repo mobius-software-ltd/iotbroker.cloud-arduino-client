@@ -25,19 +25,23 @@ class coapClient():
         self.forSubscribe = {}
         self.forUnsubscribe = {}
         self.pingNum = 0
+        self.connectionStateEnum = ConnectionState.connectionState()
+        self.coapOptionType = CoapOptionType.coapOptionType()
+        self.coapType = CoapType.coapType()
+        self.coapCode = CoapCode.coapCode()
 
     def goConnect(self):
-        self.setState(ConnectionState.connectionState.getValueByKey('CONNECTING'))
+        self.setState(self.connectionStateEnum.getValueByKey('CONNECTING'))
 
         duration = self.account.keepAlive
 
         if self.timers is not None:
             self.timers.stopAllTimers()
 
-        option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('NODE_ID'), self.account.clientID)
+        option = self.parserOption.encode(self.coapOptionType.getValueByKey('NODE_ID'), self.account.clientID)
         options = []
         options.append(option)
-        message = CoapMessage.coapMessage(self.Version,CoapType.coapType.getValueByKey('CONFIRMABLE'),CoapCode.coapCode.getValueByKey('PUT'),0,None,options,None)
+        message = CoapMessage.coapMessage(self.Version,self.coapType.getValueByKey('CONFIRMABLE'),self.coapCode.getValueByKey('PUT'),0,None,options,None)
         self.udpClient = UdpClient.udpClient(self.account.serverHost, self.account.port, self)
         if self.account.isSecure:
             self.udpClient.connectSecure(self.account.cert_path, self.account.key_path)
@@ -46,7 +50,7 @@ class coapClient():
         self.timers.goPingTimer(message,duration)
 
     def send(self, message):
-        if self.connectionState == ConnectionState.connectionState.getValueByKey('CONNECTION_ESTABLISHED'):
+        if self.connectionState == self.connectionStateEnum.getValueByKey('CONNECTION_ESTABLISHED'):
             message = self.parser.encode(message)
             self.udpClient.sendMessage(message)
         else:
@@ -56,15 +60,15 @@ class coapClient():
         message = self.parser.decode(data)
         type = message.getType()
         code = message.getCode()
-        if (code == CoapCode.coapCode.getValueByKey('POST') or code == CoapCode.coapCode.getValueByKey('PUT')) and type != CoapType.coapType.getValueByKey('ACKNOWLEDGEMENT'):
+        if (code == self.coapCode.getValueByKey('POST') or code == self.coapCode.getValueByKey('PUT')) and type != self.coapType.getValueByKey('ACKNOWLEDGEMENT'):
             topic = None
             qosValue = None
             for option in message.getOptionsDecode():
-                if CoapOptionType.coapOptionType(option.getType()) == CoapOptionType.coapOptionType.getValueByKey('URI_PATH'):
+                if CoapOptionType.coapOptionType(option.getType()) == self.coapOptionType.getValueByKey('URI_PATH'):
                     topic = self.parserOption.decode(CoapOptionType.coapOptionType(option.getType()),option)
                     break
             for option in message.getOptionsDecode():
-                if CoapOptionType.coapOptionType(option.getType()) == CoapOptionType.coapOptionType.getValueByKey('ACCEPT'):
+                if CoapOptionType.coapOptionType(option.getType()) == self.coapOptionType.getValueByKey('ACCEPT'):
                     qosValue = self.parserOption.decode(CoapOptionType.coapOptionType(option.getType()),option)
                     break
             if len(topic) > 0:
@@ -75,11 +79,11 @@ class coapClient():
             else:
                 textFormat = "text/plain"
                 options = []
-                option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('CONTENT_FORMAT'), textFormat)
+                option = self.parserOption.encode(self.coapOptionType.getValueByKey('CONTENT_FORMAT'), textFormat)
                 options.append(option)
-                option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('NODE_ID'), self.account.clientID)
+                option = self.parserOption.encode(self.coapOptionType.getValueByKey('NODE_ID'), self.account.clientID)
                 options.append(option)
-                ack = CoapMessage(self.Version,CoapType.coapType.getValueByKey('ACKNOWLEDGEMENT'),CoapCode.coapCode.getValueByKey('BAD_OPTION'),message.getPacketID(),message.getToken(),options,None)
+                ack = CoapMessage(self.Version,self.coapType.getValueByKey('ACKNOWLEDGEMENT'),self.coapCode.getValueByKey('BAD_OPTION'),message.getPacketID(),message.getToken(),options,None)
                 self.send(ack)
 
         process_messageType_method(self, message.getType().value, message)
@@ -92,43 +96,43 @@ class coapClient():
 
     def publish(self, topicName, qosValue, content, retain, dup):
         options = []
-        option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('URI_PATH'), topicName)
+        option = self.parserOption.encode(self.coapOptionType.getValueByKey('URI_PATH'), topicName)
         options.append(option)
-        option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('NODE_ID'), self.account.clientID)
+        option = self.parserOption.encode(self.coapOptionType.getValueByKey('NODE_ID'), self.account.clientID)
         options.append(option)
-        option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('ACCEPT'), qosValue)
+        option = self.parserOption.encode(self.coapOptionType.getValueByKey('ACCEPT'), qosValue)
         options.append(option)
-        message = CoapMessage(self.Version, CoapType.coapType.getValueByKey('CONFIRMABLE'), CoapCode.coapCode.getValueByKey('PUT'), 0, '0', options, content)
+        message = CoapMessage(self.Version, self.coapType.getValueByKey('CONFIRMABLE'), self.coapCode.getValueByKey('PUT'), 0, '0', options, content)
         packetID = self.timers.goMessageTimer(message)
         message.setPacketID(packetID)
         self.forPublish[packetID] = message
 
     def subscribeTo(self,topicName, qosValue):
         options = []
-        option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('OBSERVE'), 0)
+        option = self.parserOption.encode(self.coapOptionType.getValueByKey('OBSERVE'), 0)
         options.append(option)
-        option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('URI_PATH'), topicName)
+        option = self.parserOption.encode(self.coapOptionType.getValueByKey('URI_PATH'), topicName)
         options.append(option)
-        option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('ACCEPT'), qosValue)
+        option = self.parserOption.encode(self.coapOptionType.getValueByKey('ACCEPT'), qosValue)
         options.append(option)
-        option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('NODE_ID'), self.account.clientID)
+        option = self.parserOption.encode(self.coapOptionType.getValueByKey('NODE_ID'), self.account.clientID)
         options.append(option)
-        message = CoapMessage(self.Version, CoapType.coapType.getValueByKey('CONFIRMABLE'), CoapCode.coapCode.getValueByKey('GET'), 0, '0', options, None)
+        message = CoapMessage(self.Version, self.coapType.getValueByKey('CONFIRMABLE'), self.coapCode.getValueByKey('GET'), 0, '0', options, None)
         packetID = self.timers.goMessageTimer(message)
         message.setPacketID(packetID)
         self.forSubscribe[packetID] = message
 
     def unsubscribeFrom(self, topicName):
         options = []
-        option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('OBSERVE'), 1)
+        option = self.parserOption.encode(self.coapOptionType.getValueByKey('OBSERVE'), 1)
         options.append(option)
-        option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('NODE_ID'), self.account.clientID)
+        option = self.parserOption.encode(self.coapOptionType.getValueByKey('NODE_ID'), self.account.clientID)
         options.append(option)
-        option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('URI_PATH'), topicName)
+        option = self.parserOption.encode(self.coapOptionType.getValueByKey('URI_PATH'), topicName)
         options.append(option)
-        option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('ACCEPT'), 0)
+        option = self.parserOption.encode(self.coapOptionType.getValueByKey('ACCEPT'), 0)
         options.append(option)
-        message = CoapMessage(self.Version, CoapType.coapType.getValueByKey('CONFIRMABLE'), CoapCode.coapCode.getValueByKey('GET'), 0, '0', options, None)
+        message = CoapMessage(self.Version, self.coapType.getValueByKey('CONFIRMABLE'), self.coapCode.getValueByKey('GET'), 0, '0', options, None)
         packetID = self.timers.goMessageTimer(message)
         message.setPacketID(packetID)
         self.forUnsubscribe[packetID] = message
@@ -144,22 +148,25 @@ class coapClient():
         print('Timeout ...')
 
     def ConnectionLost(self):
-        self.setState(ConnectionState.connectionState.getValueByKey('CONNECTION_LOST'))
+        self.setState(self.connectionStateEnum.getValueByKey('CONNECTION_LOST'))
 
     def connected(self):
-        self.setState(ConnectionState.connectionState.getValueByKey('CHANNEL_ESTABLISHED'))
+        self.setState(self.connectionStateEnum.getValueByKey('CHANNEL_ESTABLISHED'))
 
     def connectFailed(self):
-        self.setState(ConnectionState.connectionState.getValueByKey('CHANNEL_FAILED'))
+        self.setState(self.connectionStateEnum.getValueByKey('CHANNEL_FAILED'))
+        
+    def isConnected(self):
+        return self.connectionState == self.connectionState.getValueByKey('CONNECTION_ESTABLISHED')
 
 #__________________________________________________________________________________________
 
 def CONFIRMABLE(self,message):
     if isinstance(message,CoapMessage):
         options = []
-        option = self.parserOption.encode(CoapOptionType.coapOptionType.getValueByKey('NODE_ID'), self.account.clientID)
+        option = self.parserOption.encode(self.coapOptionType.getValueByKey('NODE_ID'), self.account.clientID)
         options.append(option)
-        ack = CoapMessage.coapMessage(self.Version,CoapType.coapType.getValueByKey('ACKNOWLEDGEMENT'),message.getCode(),message.getPacketID(),message.getToken(),options,None)
+        ack = CoapMessage.coapMessage(self.Version,self.coapType.getValueByKey('ACKNOWLEDGEMENT'),message.getCode(),message.getPacketID(),message.getToken(),options,None)
         self.send(ack)
 
 def NONCONFIRMABLE(self,message):
@@ -172,13 +179,13 @@ def ACKNOWLEDGEMENT(self,message):
     qosValue = None
     if message.getToken() is not None:
         ack = self.timers.removeTimer(int(message.getToken()))
-        if message.getCode() == CoapCode.coapCode.getValueByKey('CONTENT'):
+        if message.getCode() == self.coapCode.getValueByKey('CONTENT'):
             for option in message.getOptionsDecode():
-                if CoapOptionType.coapOptionType(option.getType()) == CoapOptionType.coapOptionType.getValueByKey('URI_PATH'):
+                if CoapOptionType.coapOptionType(option.getType()) == self.coapOptionType.getValueByKey('URI_PATH'):
                     topic = self.parserOption.decode(CoapOptionType(option.getType()), option)
                     break
             for option in message.getOptionsDecode():
-                if CoapOptionType.coapOptionType(option.getType()) == CoapOptionType.coapOptionType.getValueByKey('ACCEPT'):
+                if CoapOptionType.coapOptionType(option.getType()) == self.coapOptionType.getValueByKey('ACCEPT'):
                     qosValue = self.parserOption.decode(CoapOptionType.coapOptionType(option.getType()), option)
                     break
             if len(topic) > 0:
@@ -187,18 +194,18 @@ def ACKNOWLEDGEMENT(self,message):
                 topicResult = CoapTopic.coapTopic(topic, qos)
                 print('Publish received')
     if ack is not None:
-        if ack.getCode() == CoapCode.coapCode.getValueByKey('GET'):
+        if ack.getCode() == self.coapCode.getValueByKey('GET'):
             observeValue = None
             for option in ack.getOptionsDecode():
-                if CoapOptionType.coapOptionType(option.getType()) == CoapOptionType.coapOptionType.getValueByKey('OBSERVE'):
+                if CoapOptionType.coapOptionType(option.getType()) == self.coapOptionType.getValueByKey('OBSERVE'):
                     observeValue = self.parserOption.decode(CoapOptionType.coapOptionType(option.getType()), option)
                     break
             for option in ack.getOptionsDecode():
-                if CoapOptionType.coapOptionType(option.getType()) == CoapOptionType.coapOptionType.getValueByKey('URI_PATH'):
+                if CoapOptionType.coapOptionType(option.getType()) == self.coapOptionType.getValueByKey('URI_PATH'):
                     topic = self.parserOption.decode(CoapOptionType.coapOptionType(option.getType()), option)
                     break
             for option in ack.getOptionsDecode():
-                if CoapOptionType.coapOptionType(option.getType()) == CoapOptionType.coapOptionType.getValueByKey('ACCEPT'):
+                if CoapOptionType.coapOptionType(option.getType()) == self.coapOptionType.getValueByKey('ACCEPT'):
                     qosValue = self.parserOption.decode(CoapOptionType.coapOptionType(option.getType()), option)
                     break
             if observeValue == 0:
@@ -208,13 +215,13 @@ def ACKNOWLEDGEMENT(self,message):
                 list = []
                 list.append(topic)
                 print('Unsuback received')
-        elif ack.getCode() == CoapCode.coapCode.getValueByKey('PUT'):
+        elif ack.getCode() == self.coapCode.getValueByKey('PUT'):
             for option in ack.getOptionsDecode():
-                if CoapOptionType.coapOptionType(option.getType()) == CoapOptionType.coapOptionType.getValueByKey('URI_PATH'):
+                if CoapOptionType.coapOptionType(option.getType()) == self.coapOptionType.getValueByKey('URI_PATH'):
                     topic = self.parserOption.decode(CoapOptionType.coapOptionType(option.getType()), option)
                     break
             for option in ack.getOptionsDecode():
-                if CoapOptionType.coapOptionType(option.getType()) == CoapOptionType.coapOptionType.getValueByKey('ACCEPT'):
+                if CoapOptionType.coapOptionType(option.getType()) == self.coapOptionType.getValueByKey('ACCEPT'):
                     qosValue = self.parserOption.decode(CoapOptionType.coapOptionType(option.getType()), option)
                     break
             content = ack.getPayload()

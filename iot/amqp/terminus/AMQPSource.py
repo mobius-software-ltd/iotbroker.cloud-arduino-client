@@ -24,6 +24,7 @@ class amqpSource():
         self.outcomes = outcomes
         self.capabilities = capabilities
         self.index = 0
+        self.amqpType = AMQPType.amqpType()
 
     def toArgumentsList(self):
         list = TLVList.tlvList(None,None)
@@ -58,7 +59,7 @@ class amqpSource():
         if self.capabilities is not None and len(self.capabilities) > 0:
             list.addElement(10, wrapper.wrapArray(self.capabilities))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x28))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x28))
         list.setConstructor(constructor)
         return list
 
@@ -109,7 +110,7 @@ class amqpSource():
                 element = list.getList()[8]
                 if element is not None and not element.isNull():
                     code = element.getCode()
-                    if code not in (AMQPType.amqpType.getValueByKey('LIST_0'),AMQPType.amqpType.getValueByKey('LIST_8'),AMQPType.amqpType.getValueByKey('LIST_32')):
+                    if code not in (self.amqpType.getValueByKey('LIST_0'),self.amqpType.getValueByKey('LIST_8'),self.amqpType.getValueByKey('LIST_32')):
                         print('Expected type OUTCOME - received: ' + element.getCode())
 
 

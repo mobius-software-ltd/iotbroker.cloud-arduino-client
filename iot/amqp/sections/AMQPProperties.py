@@ -24,6 +24,8 @@ class amqpProperties():
         self.groupId = groupId
         self.groupSequence = groupSequence
         self.replyToGroupId = replyToGroupId
+        self.amqpType = AMQPType.amqpType()
+        self.sectionCode = SectionCode.sectionCode()
 
     def getValue(self):
         list  = TLVList.tlvList(None, None)
@@ -66,7 +68,7 @@ class amqpProperties():
         if self.replyToGroupId is not None:
             list.addElement(12, wrapper.wrap(self.replyToGroupId))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x73))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x73))
         list.setConstructor(constructor)
         return list
 
@@ -78,13 +80,13 @@ class amqpProperties():
             element = list.getList()[0]
             if element is not None:
                 code = element.getCode()
-                if code in (AMQPType.amqpType.getValueByKey('ULONG_0'),AMQPType.amqpType.getValueByKey('SMALL_ULONG'),AMQPType.amqpType.getValueByKey('ULONG')):
+                if code in (self.amqpType.getValueByKey('ULONG_0'),self.amqpType.getValueByKey('SMALL_ULONG'),self.amqpType.getValueByKey('ULONG')):
                     self.messageId = LongID.longID(unwrapper.unwrapULong(element))
-                elif code in (AMQPType.amqpType.getValueByKey('STRING_8'),AMQPType.amqpType.getValueByKey('STRING_32')):
+                elif code in (self.amqpType.getValueByKey('STRING_8'),self.amqpType.getValueByKey('STRING_32')):
                     self.messageId = StringID.stringID(unwrapper.unwrapString(element))
-                elif code in (AMQPType.amqpType.getValueByKey('BINARY_8'),AMQPType.amqpType.getValueByKey('BINARY_32')):
+                elif code in (self.amqpType.getValueByKey('BINARY_8'),self.amqpType.getValueByKey('BINARY_32')):
                     self.messageId = BinaryID.binaryID(unwrapper.unwrapBinary(element))
-                elif code in (AMQPType.amqpType.getValueByKey('UUID')):
+                elif code in (self.amqpType.getValueByKey('UUID')):
                     self.messageId = BinaryID.binaryID(unwrapper.unwrapUuid(element))
                 else:
                     print('Expected type MessageID received ' + str(element.getCode()))
@@ -138,7 +140,7 @@ class amqpProperties():
                 self.replyToGroupId = unwrapper.unwrapString(element)
 
     def getCode(self):
-        return SectionCode.sectionCode.getValueByKey('PROPERTIES')
+        return self.sectionCode.getValueByKey('PROPERTIES')
 
     def toString(self):
         return 'AMQPProperties [messageId=' + self.messageId + ', userId=' + self.userId + ', to=' + self.to + ', subject=' + self.subject + ', replyTo=' + self.replyTo + ', correlationId=' + self.correlationId + ', contentType=' + self.contentType + ', contentEncoding=' + self.contentEncoding + ', absoluteExpiryTime=' + self.absoluteExpiryTime + ', creationTime=' + self.creationTime + ', groupId=' + self.groupId + ', groupSequence=' + self.groupSequence + ', replyToGroupId=' + self.replyToGroupId + ']'

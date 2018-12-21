@@ -9,6 +9,7 @@ class amqpReceived():
     def __init__(self, sectionNumber, sectionOffset):
         self.sectionNumber = sectionNumber
         self.sectionOffset = sectionOffset
+        self.amqpType = AMQPType.amqpType()
 
     def toArgumentsList(self):
         list = TLVList.tlvList(None,None)
@@ -18,7 +19,7 @@ class amqpReceived():
         if self.sectionOffset is not None:
             list.addElement(1, wrapper.wrap(self.sectionOffset))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x23))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x23))
         list.setConstructor(constructor)
         return list
 

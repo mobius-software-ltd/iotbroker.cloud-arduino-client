@@ -4,6 +4,7 @@ class gwInfo():
     def __init__(self, gwID, gwAddress):
         self.gwID = gwID
         self.gwAddress = gwAddress
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         length = 3
@@ -12,7 +13,7 @@ class gwInfo():
         return length
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_GWINFO')
+        return self.snMessageType.getValueByKey('SN_GWINFO')
 
     def getgwID(self):
         return self.gwID

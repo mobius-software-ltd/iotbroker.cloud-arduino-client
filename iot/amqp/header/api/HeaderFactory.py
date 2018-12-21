@@ -31,6 +31,9 @@ class headerFactory():
     def __init__(self, index):
         self.index = index
         self.tlvFactory = TLVFactory.tlvFactory(index)
+        self.amqpType = AMQPType.amqpType()
+        self.headerCode = HeaderCode.headerCode()
+        self.sectionCode = SectionCode.sectionCode()
 
     def getIndex(self):
         return self.index
@@ -46,29 +49,29 @@ class headerFactory():
         if list is not None:
             code  = list.getCode()
 
-            if code not in (AMQPType.amqpType.getValueByKey('LIST_0'),AMQPType.amqpType.getValueByKey('LIST_8'),AMQPType.amqpType.getValueByKey('LIST_32')):
+            if code not in (self.amqpType.getValueByKey('LIST_0'),self.amqpType.getValueByKey('LIST_8'),self.amqpType.getValueByKey('LIST_32')):
                 print('Received amqp-header with malformed arguments')
 
             byteCode = list.getConstructor().getDescriptorCode()
-            code = HeaderCode.headerCode(byteCode)
+            code = HeaderCode.getKeyByValue(byteCode)
 
-            if code == HeaderCode.headerCode.getValueByKey('ATTACH'):
+            if code == 'ATTACH':
                 header = AMQPAttach.amqpAttach(None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None)
-            elif code == HeaderCode.headerCode.getValueByKey('BEGIN'):
+            elif code == 'BEGIN':
                 header = AMQPBegin.amqpBegin(None,None,None,None,None,None,None,None,None,None,None,None)
-            elif code == HeaderCode.headerCode.getValueByKey('CLOSE'):
+            elif code == 'CLOSE':
                 header = AMQPClose.amqpClose(None,None,None,None,None)
-            elif code == HeaderCode.headerCode.getValueByKey('DETACH'):
+            elif code == 'DETACH':
                 header = AMQPDetach.amqpDetach(None,None,None,None,None,None,None)
-            elif code == HeaderCode.headerCode.getValueByKey('DISPOSITION'):
+            elif code == 'DISPOSITION':
                 header = AMQPDisposition.amqpDisposition(None,None,None,None,None,None,None,None,None,None)
-            elif code == HeaderCode.headerCode.getValueByKey('END'):
+            elif code == 'END':
                 header = AMQPEnd.amqpEnd(None,None,None,None,None)
-            elif code == HeaderCode.headerCode.getValueByKey('FLOW'):
+            elif code == 'FLOW':
                 header = AMQPFlow.amqpFlow(None,None,None,None,None,None,None,None,None,None,None,None,None,None,None)
-            elif code == HeaderCode.headerCode.getValueByKey('OPEN'):
+            elif code == 'OPEN':
                 header = AMQPOpen.amqpOpen(None,None,None,None,None,None,None,None,None,None,None,None,None,None)
-            elif code == HeaderCode.headerCode.getValueByKey('TRANSFER'):
+            elif code == 'TRANSFER':
                 header = AMQPTransfer.amqpTransfer(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
             header.fromArgumentsList(list)
             return header
@@ -80,20 +83,20 @@ class headerFactory():
         self.index = self.tlvFactory.getIndex()
         if list is not None:
             code  = list.getCode()
-            if code not in (AMQPType.amqpType.getValueByKey('LIST_0'),AMQPType.amqpType.getValueByKey('LIST_8'),AMQPType.amqpType.getValueByKey('LIST_32')):
+            if code not in (self.amqpType.getValueByKey('LIST_0'),self.amqpType.getValueByKey('LIST_8'),self.amqpType.getValueByKey('LIST_32')):
                 print('Received sasl-header with malformed arguments')
             byteCode = list.getConstructor().getDescriptorCode()
-            code = HeaderCode.headerCode(byteCode)
+            code = HeaderCode.getKeyByValue(byteCode)
 
-            if code == HeaderCode.headerCode.getValueByKey('CHALLENGE'):
+            if code == 'CHALLENGE':
                 header = SASLChallenge.saslChallenge(None,None,None,None,None)
-            elif code == HeaderCode.headerCode.getValueByKey('INIT'):
+            elif code == 'INIT':
                 header = SASLInit.saslInit(None,None,None,None,None,None,None)
-            elif code == HeaderCode.headerCode.getValueByKey('MECHANISMS'):
+            elif code == 'MECHANISMS':
                 header = SASLMechanisms.saslMechanisms(None,None,None,None,None)
-            elif code == HeaderCode.headerCode.getValueByKey('OUTCOME'):
+            elif code == 'OUTCOME':
                 header = SASLOutcome.saslOutcome(None,None,None,None,None,None)
-            elif code == HeaderCode.headerCode.getValueByKey('RESPONSE'):
+            elif code == 'RESPONSE':
                 header = SASLResponse.saslResponse(None,None,None,None,None)
             header.fromArgumentsList(list)
             return header
@@ -103,24 +106,24 @@ class headerFactory():
         section = None
         self.index = self.tlvFactory.getIndex()
         byteCode = value.getConstructor().getDescriptorCode()
-        code = SectionCode.sectionCode(byteCode)
-        if code == SectionCode.sectionCode.getValueByKey('APPLICATION_PROPERTIES'):
+        code = self.sectionCode.getKeyByValue(byteCode)
+        if code == 'APPLICATION_PROPERTIES':
             section = ApplicationProperties.applicationProperties(None)
-        elif code == SectionCode.sectionCode.getValueByKey('DATA'):
+        elif code == 'DATA':
             section = AMQPData.amqpData(None)
-        elif code == SectionCode.sectionCode.getValueByKey('DELIVERY_ANNOTATIONS'):
+        elif code == 'DELIVERY_ANNOTATIONS':
             section = DeliveryAnnotations.deliveryAnnotations(None)
-        elif code == SectionCode.sectionCode.getValueByKey('FOOTER'):
+        elif code == 'FOOTER':
             section = AMQPFooter.amqpFooter(None)
-        elif code == SectionCode.sectionCode.getValueByKey('HEADER'):
+        elif code == 'HEADER':
             section = MessageHeader.messageHeader(None)
-        elif code == SectionCode.sectionCode.getValueByKey('MESSAGE_ANNOTATIONS'):
+        elif code == 'MESSAGE_ANNOTATIONS':
             section = MessageAnnotations.messageAnnotations(None)
-        elif code == SectionCode.sectionCode.getValueByKey('PROPERTIES'):
+        elif code == 'PROPERTIES':
             section = AMQPProperties.amqpProperties(None)
-        elif code == SectionCode.sectionCode.getValueByKey('SEQUENCE'):
+        elif code == 'SEQUENCE':
             section = AMQPSequence.amqpSequence(None)
-        elif code == SectionCode.sectionCode.getValueByKey('VALUE'):
+        elif code == 'VALUE':
             section = AMQPValue.amqpValue(None)
         else:
             print('Received header with unrecognized message section code')

@@ -13,10 +13,14 @@ import iot.amqp.tlv.impl.TLVList as TLVList
 
 class amqpAttach():
     def __init__(self,code,doff,type,channel,name,handle,role,sndSettleMode,rcvSettleMode,source,target,unsettled,incompleteUnsettled,initialDeliveryCount,maxMessageSize,offeredCapabilities,desiredCapabilities,properties):
+        self.headerCode = HeaderCode.headerCode()
+        self.roleCode = RoleCode.roleCode()
+        self.amqpType = AMQPType.amqpType() 
+        
         if code is not None:
             self.code = code
         else:
-            self.code = HeaderCode.headerCode.getValueByKey('ATTACH')
+            self.code = self.headerCode.getValueByKey('ATTACH')
         if doff is not None:
             self.doff = doff
         else:
@@ -44,6 +48,7 @@ class amqpAttach():
         self.offeredCapabilities = offeredCapabilities
         self.desiredCapabilities = desiredCapabilities
         self.properties = properties
+       
     
         def setDoff(self,doff):
             self.doff = doff
@@ -97,7 +102,7 @@ class amqpAttach():
 
         if self.initialDeliveryCount is not None:
             list.addElement(9,wrapper.wrap(self.initialDeliveryCount))
-        elif self.role == RoleCode.roleCode.getValueByKey('SENDER'):
+        elif self.role == self.roleCode.getValueByKey('SENDER'):
             print("Sender's attach header must contain a non-null initial-delivery-count value")
 
         if self.maxMessageSize is not None:
@@ -109,7 +114,7 @@ class amqpAttach():
         if self.properties is not None and len(self.properties) > 0:
             list.addElement(13, wrapper.wrapMap(self.properties))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
         list.setConstructor(constructor)
         return list
 
@@ -151,7 +156,7 @@ class amqpAttach():
             element = list.getList()[5]
             if element is not None and not element.isNull():
                 code = element.getCode()
-                if code not in (AMQPType.amqpType.getValueByKey('LIST_0'),AMQPType.amqpType.getValueByKey('LIST_8'),AMQPType.amqpType.getValueByKey('LIST_32')):
+                if code not in (self.amqpType.getValueByKey('LIST_0'),self.amqpType.getValueByKey('LIST_8'),self.amqpType.getValueByKey('LIST_32')):
                     print('Expected type SOURCE - received: ' + str(element.getCode()))
                 self.source = AMQPSource.amqpSource(None,None,None,None,None,None,None,None,None,None,None)
                 self.source.fromArgumentsList(element)
@@ -159,7 +164,7 @@ class amqpAttach():
             element = list.getList()[6]
             if element is not None and not element.isNull():
                 code = element.getCode()
-                if code not in (AMQPType.amqpType.getValueByKey('LIST_0'), AMQPType.amqpType.getValueByKey('LIST_8'), AMQPType.amqpType.getValueByKey('LIST_32')):
+                if code not in (self.amqpType.getValueByKey('LIST_0'), self.amqpType.getValueByKey('LIST_8'), self.amqpType.getValueByKey('LIST_32')):
                     print('Expected type TARGET - received: ' + str(element.getCode()))
                 self.target = AMQPTarget.amqpTarget(None, None, None, None, None, None, None)
                 self.target.fromArgumentsList(element)
@@ -175,7 +180,7 @@ class amqpAttach():
             element = list.getList()[9]
             if element is not None and not element.isNull():
                 self.initialDeliveryCount = unwrapper.unwrapUInt(element)
-            elif self.role == RoleCode.roleCode.getValueByKey('SENDER'):
+            elif self.role == self.roleCode.getValueByKey('SENDER'):
                 print('Received an attach header with a null initial-delivery-count')
         if size > 10:
             element = list.getList()[10]

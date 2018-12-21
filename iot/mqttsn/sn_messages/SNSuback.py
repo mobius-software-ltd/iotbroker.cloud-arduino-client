@@ -6,12 +6,13 @@ class snSuback():
         self.code = code
         self.qos = qos
         self.packetID = packetID
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         return 8
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_SUBACK')
+        return self.snMessageType.getValueByKey('SN_SUBACK')
 
     def getTopicID(self):
         return self.topicID

@@ -67,13 +67,13 @@ class timersMap():
                 timer.start()
                 return message.packetID
             else:
-                if message['packetID'] == None:
-                    message['packetID'] = self.getNewPacketID()
+                if message.getPayload()['packetID'] == None:
+                    message.getPayload()['packetID'] = self.getNewPacketID()
 
                 timer = TimerTask.timerTask(message, 3, self.client)
-                self.timersMap[message['packetID']] = timer
+                self.timersMap[message.getPayload()['packetID']] = timer
                 timer.start()
-                return message['packetID']
+                return message.getPayload()['packetID']
 
     def removeTimer(self, id):
         timer = self.timersMap.get(id)

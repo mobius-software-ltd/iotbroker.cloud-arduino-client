@@ -15,6 +15,10 @@ class Flags():
         self.will = will
         self.cleanSession = cleanSession
         self.topicType = topicType
+        self.qosType = QosType.qosType()
+        self.flag = Flag.flag()
+        self.snMessageType = SNmessageType.snMessageType()
+        self.topicTypeEnum = TopicType.topicType()
 
     def isDup(self):
         return self.dup
@@ -103,31 +107,31 @@ class Flags():
         if 4 in bitmask: #CLEAN_SESSION
             clean = True
 
-        qos = QosType.qosType.getValueByKey('AT_MOST_ONCE')
-        if Flag.flag.getValueByKey('QOS_LEVEL_ONE') in bitmask:
+        qos = self.qosType.getValueByKey('AT_MOST_ONCE')
+        if self.flag.getValueByKey('QOS_LEVEL_ONE') in bitmask:
             qos = QosType.LEVEL_ONE.value[0]
-        if  Flag.flag.getValueByKey('QOS_2') in bitmask:
+        if  self.flag.getValueByKey('QOS_2') in bitmask:
             qos = QosType.EXACTLY_ONCE.value[0]
-        if Flag.flag.getValueByKey('QOS_1') in bitmask:
+        if self.flag.getValueByKey('QOS_1') in bitmask:
             qos = QosType.AT_LEAST_ONCE.value[0]
 
-        topicType = TopicType.topicType.getValueByKey('NAMED')
-        if Flag.flag.getValueByKey('SHORT_TOPIC') in bitmask:
-            topicType = TopicType.topicType.getValueByKey('SHORT')
-        if Flag.flag.getValueByKey('ID_TOPIC') in bitmask:
-            topicType = TopicType.topicType.getValueByKey('ID')
+        topicType = self.topicType.getValueByKey('NAMED')
+        if self.flag.getValueByKey('SHORT_TOPIC') in bitmask:
+            topicType = self.topicType.getValueByKey('SHORT')
+        if self.flag.getValueByKey('ID_TOPIC') in bitmask:
+            topicType = self.topicType.getValueByKey('ID')
 
-        if type == SNmessageType.snMessageType.getValueByKey('SN_CONNECT'):
+        if type == self.snMessageType.getValueByKey('SN_CONNECT'):
             if dup:
                 print('Error. SNFlags. Invalid encoding: dup flag = ' + str(type))
-            if qos != QosType.qosType.getValueByKey('AT_MOST_ONCE'):
+            if qos != self.qosType.getValueByKey('AT_MOST_ONCE'):
                 print('Error. SNFlags. Invalid encoding: qos flag = ' + str(type))
             if retain:
                 print('Error. SNFlags. Invalid encoding: retain flag = ' + str(type))
             if topicType != TopicType.NAMED:
                print('Error. SNFlags. Invalid encoding: topicType flag = ' + str(type))
 
-        if type ==  SNmessageType.snMessageType.getValueByKey('SN_WILL_TOPIC'):
+        if type ==  self.snMessageType.getValueByKey('SN_WILL_TOPIC'):
             if dup:
                 print('Error. SNFlags. Invalid encoding: dup flag = ' + str(type))
             if qos is None:
@@ -136,25 +140,25 @@ class Flags():
                 print('Error. SNFlags. Invalid encoding: will flag = ' + str(type))
             if clean:
                 print('Error. SNFlags. Invalid encoding: clean flag = ' + str(type))
-            if topicType != TopicType.topicType.getValueByKey('NAMED'):
+            if topicType != self.topicTypeEnum.getValueByKey('NAMED'):
                 print('Error. SNFlags. Invalid encoding: topicType flag = ' + str(type))
 
-        if type == SNmessageType.snMessageType.getValueByKey('SN_PUBLISH'):
+        if type == self.snMessageType.getValueByKey('SN_PUBLISH'):
             if qos is None:
                 print('Error. SNFlags. Invalid encoding: qos flag = ' + str(type))
-            if dup & (qos == QosType.qosType.getValueByKey('AT_MOST_ONCE') or qos == QosType.qosType.getValueByKey('LEVEL_ONE')):
+            if dup & (qos == self.qosType.getValueByKey('AT_MOST_ONCE') or qos == self.qosType.getValueByKey('LEVEL_ONE')):
                 print('Error. SNFlags. Invalid encoding: dup flag = ' + str(type))
             if will:
                 print('Error. SNFlags. Invalid encoding: will flag = ' + str(type))
             if clean:
                 print('Error. SNFlags. Invalid encoding: clean flag = ' + str(type))
-            if topicType != TopicType.topicType.getValueByKey('NAMED') and topicType != TopicType.topicType.getValueByKey('SHORT') and topicType != TopicType.topicType.getValueByKey('ID'):
+            if topicType != self.topicTypeEnum.getValueByKey('NAMED') and topicType != self.topicTypeEnum.getValueByKey('SHORT') and topicType != self.topicTypeEnum.getValueByKey('ID'):
                 print('Error. SNFlags. Invalid encoding: topicType flag = ' + str(type))
 
-        if type == SNmessageType.snMessageType.getValueByKey('SN_SUBSCRIBE'):
+        if type == self.snMessageType.getValueByKey('SN_SUBSCRIBE'):
             if qos is None:
                print('Error. SNFlags. Invalid encoding: qos flag = ' + str(type))
-            if qos == QosType.qosType.getValueByKey('LEVEL_ONE'):
+            if qos == self.qosType.getValueByKey('LEVEL_ONE'):
                 print('Error. SNFlags. Invalid encoding: qos flag = ' + str(type))
             if retain:
                 print('Error. SNFlags. Invalid encoding: retain flag = ' + str(type))
@@ -162,10 +166,10 @@ class Flags():
                 print('Error. SNFlags. Invalid encoding: will flag = ' + str(type))
             if clean:
                 print('Error. SNFlags. Invalid encoding: clean flag = ' + str(type))
-            if topicType != TopicType.topicType.getValueByKey('NAMED') and topicType != TopicType.topicType.getValueByKey('SHORT') and topicType != TopicType.topicType.getValueByKey('ID'):
+            if topicType != self.topicTypeEnum.getValueByKey('NAMED') and topicType != self.topicTypeEnum.getValueByKey('SHORT') and topicType != self.topicTypeEnum.getValueByKey('ID'):
                 print('Error. SNFlags. Invalid encoding: topicType flag = ' + str(type))
 
-        if type == SNmessageType.snMessageType.getValueByKey('SN_SUBACK'):
+        if type == self.snMessageType.getValueByKey('SN_SUBACK'):
             if dup:
                 print('Error. SNFlags. Invalid encoding: dup flag = ' + str(type))
             if qos is None:
@@ -176,13 +180,13 @@ class Flags():
                 print('Error. SNFlags. Invalid encoding: will flag = ' + str(type))
             if clean:
                 print('Error. SNFlags. Invalid encoding: clean flag = ' + str(type))
-            if topicType != TopicType.topicType.getValueByKey('NAMED'):
+            if topicType != self.topicTypeEnum.getValueByKey('NAMED'):
                 print('Error. SNFlags. Invalid encoding: topicType flag = ' + str(type))
 
-        if type == SNmessageType.snMessageType.getValueByKey('SN_UNSUBSCRIBE'):
+        if type == self.snMessageType.getValueByKey('SN_UNSUBSCRIBE'):
             if dup:
                 print('Error. SNFlags. Invalid encoding: dup flag = ' + str(type))
-            if qos != QosType.qosType.getValueByKey('AT_MOST_ONCE'):
+            if qos != self.qosType.getValueByKey('AT_MOST_ONCE'):
                 print('Error. SNFlags. Invalid encoding: qos flag = ' + str(type))
             if retain:
                 print('Error. SNFlags. Invalid encoding: retain flag = ' + str(type))
@@ -190,10 +194,10 @@ class Flags():
                 print('Error. SNFlags. Invalid encoding: will flag = ' + str(type))
             if clean:
                 print('Error. SNFlags. Invalid encoding: clean flag = ' + str(type))
-            if topicType != TopicType.topicType.getValueByKey('NAMED') and topicType != TopicType.topicType.getValueByKey('SHORT') and topicType != TopicType.topicType.getValueByKey('ID'):
+            if topicType != self.topicTypeEnum.getValueByKey('NAMED') and topicType != self.topicTypeEnum.getValueByKey('SHORT') and topicType != self.topicTypeEnum.getValueByKey('ID'):
                 print('Error. SNFlags. Invalid encoding: topicType flag = ' + str(type))
 
-        if type == SNmessageType.snMessageType.getValueByKey('SN_WILL_TOPIC_UPD'):
+        if type == self.snMessageType.getValueByKey('SN_WILL_TOPIC_UPD'):
             if dup:
                 print('Error. SNFlags. Invalid encoding: dup flag = ' + str(type))
             if qos is None:
@@ -202,7 +206,7 @@ class Flags():
                 print('Error. SNFlags. Invalid encoding: will flag = ' + str(type))
             if clean:
                 print('Error. SNFlags. Invalid encoding: clean flag = ' + str(type))
-            if topicType != TopicType.topicType.getValueByKey('NAMED'):
+            if topicType != self.topicTypeEnum.getValueByKey('NAMED'):
                 print('Error. SNFlags. Invalid encoding: topicType flag = ' + str(type))
 
             self.dup = dup

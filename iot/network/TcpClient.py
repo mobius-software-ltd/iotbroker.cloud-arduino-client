@@ -8,6 +8,7 @@ class tcpClient():
         self.port = port
         self.client = client
         self.connection = None
+        self.connectionState = ConnectionState.connectionState()
 
     def connectSecure(self, ssl_keyfile, ssl_certfile):
         context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
@@ -20,13 +21,13 @@ class tcpClient():
             self.connection = ssl.wrap_socket(sock)
         self.connection.connect((self.host, self.port))
         print("Connected (secured) to {0}:{1}".format(self.host, self.port))
-        self.client.setState(ConnectionState.connectionState.getValueByKey('CONNECTION_ESTABLISHED'))
+        self.client.setState(self.connectionState.getValueByKey('CONNECTION_ESTABLISHED'))
 
     def connect(self):
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connection.connect((self.host, self.port))
         print("Connected to {0}:{1}".format(self.host,self.port))
-        self.client.setState(ConnectionState.connectionState.getValueByKey('CONNECTION_ESTABLISHED'))
+        self.client.setState(self.connectionState.getValueByKey('CONNECTION_ESTABLISHED'))
 
     def sendMessage(self, message):
         self.connection.send(message)

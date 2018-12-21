@@ -5,6 +5,7 @@ class register():
         self.topicID = topicID
         self.packetID = packetID
         self.topicName = topicName
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         if self.topicName is None or len(self.topicName) == 0:
@@ -15,7 +16,7 @@ class register():
         return length
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_REGISTER')
+        return self.snMessageType.getValueByKey('SN_REGISTER')
 
     def getTopicID(self):
         return self.topicID

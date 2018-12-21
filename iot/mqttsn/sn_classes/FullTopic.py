@@ -4,9 +4,10 @@ class fullTopic():
     def __init__(self, value, qos):
         self.value = value
         self.qos = qos
+        self.topicTypeEnum = TopicType.topicType()
 
     def getType(self):
-        return TopicType.topicType.getValueByKey('NAMED')
+        return self.topicTypeEnum.getValueByKey('NAMED')
 
     def getLength(self):
         return len(self.value)

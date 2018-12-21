@@ -4,15 +4,16 @@ import iot.amqp.numeric.NumericUtil as NumericUtil
 
 class tlvMap():
     def __init__(self, code, map):
+        self.amqpType = AMQPType.amqpType()
         if code is None or map is None:
             self.width = 1
             self.count = 0
             self.size = 1
             self.map = None
-            self.constructor = SimpleConstructor.simpleConstructor(AMQPType.amqpType.getValueByKey('MAP_8'))
+            self.constructor = SimpleConstructor.simpleConstructor(self.amqpType.getValueByKey('MAP_8'))
         else:
             self.map = map
-            if code == AMQPType.amqpType.getValueByKey('MAP_8'):
+            if code == self.amqpType.getValueByKey('MAP_8'):
                 self.width = 1
             else:
                 self.width = 4
@@ -25,7 +26,7 @@ class tlvMap():
 
     def update(self):
         if self.width == 1 and self.size > 255:
-            self.constructor.setCode(AMQPType.amqpType.getValueByKey('MAP_32'))
+            self.constructor.setCode(self.amqpType.getValueByKey('MAP_32'))
             self.width = 4
             self.size += 3
 
@@ -81,9 +82,9 @@ class tlvMap():
 
     def isNull(self):
         code = self.constructor.getCode()
-        if code == AMQPType.amqpType.getValueByKey('NULL'):
+        if code == self.amqpType.getValueByKey('NULL'):
             return True
-        if code == AMQPType.amqpType.getValueByKey('ARRAY_8') or AMQPType.amqpType.getValueByKey('ARRAY_32'):
+        if code == self.amqpType.getValueByKey('ARRAY_8') or self.amqpType.getValueByKey('ARRAY_32'):
             if len(self.values) == 0:
                 return True
         return False

@@ -4,6 +4,7 @@ import iot.amqp.numeric.NumericUtil as NumericUtil
 
 class tlvVariable():
     def __init__(self, code, value):
+        self.amqpType = AMQPType.amqpType()
         self.value = value
         if len(value) > 255:
             self.width = 4
@@ -45,7 +46,7 @@ class tlvVariable():
     def isNull(self):
         if self.constructor.getType() == 'simple': 
             code = self.constructor.getCode()
-            if code == AMQPType.amqpType.getValueByKey('NULL'):
+            if code == self.amqpType.getValueByKey('NULL'):
                 return True
             else:
                 return False

@@ -3,6 +3,7 @@ import iot.mqttsn.sn_classes.SNmessageType as SNmessageType
 class willMsgUpd():
     def __init__(self, content):
         self.content = content
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         length = 2
@@ -13,7 +14,7 @@ class willMsgUpd():
         return length
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_WILL_MSG_UPD')
+        return self.snMessageType.getValueByKey('SN_WILL_MSG_UPD')
 
     def getContent(self):
         return self.content

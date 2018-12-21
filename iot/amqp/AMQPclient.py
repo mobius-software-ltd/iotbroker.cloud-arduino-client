@@ -46,8 +46,8 @@ class amqpClient():
         self.timeout = 0
 
     def send(self, header):
-
-        if self.connectionState == ConnectionState.connectionState.getValueByKey('CONNECTION_ESTABLISHED'):
+        connectionState = ConnectionState.connectionState()
+        if self.connectionState == connectionState.getValueByKey('CONNECTION_ESTABLISHED'):
             message = self.parser.encode(header)
             self.TcpClient.sendMessage(message)
         else:
@@ -66,14 +66,15 @@ class amqpClient():
             process_messageType_method(self, message.getCode().value, message)
 
     def goConnect(self):
-        self.setState(ConnectionState.connectionState.getValueByKey('CONNECTING'))
+        connectionState = ConnectionState.connectionState()
+        self.setState(connectionState.getValueByKey('CONNECTING'))
         header = AMQPProtoHeader.amqpProtoHeader(3)  # SASL = 3
         self.TcpClient = TcpClient.tcpClient(self.account.serverHost, self.account.port, self)
         if self.account.isSecure:
             self.TcpClient.connectSecure(self.account.cert_path, self.account.key_path)
         else:
             self.TcpClient.connect()
-        self.setState(ConnectionState.connectionState.getValueByKey('CONNECTION_ESTABLISHED'))
+        self.setState(connectionState.getValueByKey('CONNECTION_ESTABLISHED'))
         self.send(header)
 
     def publish(self, name, qos, content, retain, dup):
@@ -82,7 +83,8 @@ class amqpClient():
         transfer = AMQPTransfer.amqpTransfer(None,None,None,self.channel,None,None,None,messageFormat,True,False,None,None,None,None,None,None)
         data = AMQPData.amqpData(bytes(content, encoding='utf_8'))
         sections = {}
-        sections[SectionCode.sectionCode.getValueByKey('DATA')]= data
+        sectionCode = SectionCode.sectionCode()
+        sections[sectionCode.getValueByKey('DATA')]= data
         transfer.setSections(sections)
         if name in self.usedOutgoingMappings:
             handle = self.usedOutgoingMappings[name]
@@ -102,8 +104,10 @@ class amqpClient():
             currentHandler_numeric = Long.long(currentHandler)
             transfer.setHandle(currentHandler_numeric)
             self.pendingMessages.append(transfer)
-            attach = AMQPAttach.amqpAttach(None,None,None,self.channel,str(name),currentHandler_numeric,RoleCode.roleCode.getValueByKey('SENDER'),None,Int.int(ReceiveCode.receiveCode.getValueByKey('FIRST')),None,None,None,None,Long.long(0),None,None,None,None)
-            source = AMQPSource.amqpSource(str(name),Long.long(TerminusDurability.terminusDurability.getValueByKey('NONE')),None,Long.long(0),False,None,None,None,None,None,None)
+            receiveCode = ReceiveCode.receiveCode()
+            terminusDurability = TerminusDurability.terminusDurability()
+            attach = AMQPAttach.amqpAttach(None,None,None,self.channel,str(name),currentHandler_numeric,RoleCode.roleCode.getValueByKey('SENDER'),None,Int.int(receiveCode.getValueByKey('FIRST')),None,None,None,None,Long.long(0),None,None,None,None)
+            source = AMQPSource.amqpSource(str(name),Long.long(terminusDurability.getValueByKey('NONE')),None,Long.long(0),False,None,None,None,None,None,None)
             attach.setSource(source)
             self.send(attach)
 
@@ -116,9 +120,11 @@ class amqpClient():
             self.nextHandle += 1
             self.usedIncomingMappings[name] = currentHandler
             self.usedMappings[currentHandler] = name
-
-        attach = AMQPAttach.amqpAttach(None,None,None,self.channel,str(name),Long.long(currentHandler),RoleCode.roleCode.getValueByKey('RECEIVER'),Int.int(SendCode.sendCode.getValueByKey('MIXED')),None,None,None,None,None,None,None,None,None,None)
-        target = AMQPTarget.amqpTarget(str(name),Long.long(TerminusDurability.terminusDurability.getValueByKey('NONE')),None,Long.long(0),False,None,None)
+        sendCode = SendCode.sendCode()
+        roleCode = RoleCode.roleCode()
+        terminusDurability = TerminusDurability.terminusDurability()
+        attach = AMQPAttach.amqpAttach(None,None,None,self.channel,str(name),Long.long(currentHandler),roleCode.getValueByKey('RECEIVER'),Int.int(sendCode.getValueByKey('MIXED')),None,None,None,None,None,None,None,None,None,None)
+        target = AMQPTarget.amqpTarget(str(name),Long.long(terminusDurability.getValueByKey('NONE')),None,Long.long(0),False,None,None)
         attach.setTarget(target)
         self.send(attach)
 
@@ -152,6 +158,9 @@ class amqpClient():
 
     def setState(self, connectionState):
         self.connectionState = connectionState
+        
+    def isConnected(self):
+        return self.connectionState == self.connectionState.getValueByKey('CONNECTION_ESTABLISHED')
 
 #__________________________________________________________________________________________
 
@@ -182,20 +191,21 @@ def processMechanisms(self,message):
     self.send(init)
 
 def processOutcome(self,message):
-    if message.getOutcomeCode() == OutcomeCode.outcomeCode.getValueByKey('OK'):
+    outcomeCode = OutcomeCode.outcomeCode()
+    if message.getOutcomeCode() == outcomeCode.getValueByKey('OK'):
         self.isSASLConfirm = True
         header = AMQPProtoHeader.amqpProtoHeader(0)
         self.send(header)
-    elif message.getOutcomeCode() == OutcomeCode.outcomeCode.getValueByKey('AUTH'):
+    elif message.getOutcomeCode() == outcomeCode.getValueByKey('AUTH'):
         print('Connection authentication failed')
         print('Due to an unspecified problem with the supplied')
-    elif message.getOutcomeCode() == OutcomeCode.outcomeCode.getValueByKey('SYS'):
+    elif message.getOutcomeCode() == outcomeCode.getValueByKey('SYS'):
         print('Connection authentication failed')
         print('Due to a system error')
-    elif message.getOutcomeCode() == OutcomeCode.outcomeCode.getValueByKey('SYS_PERM'):
+    elif message.getOutcomeCode() == outcomeCode.getValueByKey('SYS_PERM'):
         print('Connection authentication failed')
         print('Due to a system error that is unlikely to be cor- rected without intervention')
-    elif message.getOutcomeCode() == OutcomeCode.outcomeCode.getValueByKey('SYS_TEMP'):
+    elif message.getOutcomeCode() == outcomeCode.getValueByKey('SYS_TEMP'):
         print('Connection authentication failed')
         print('Due to a transient system error')
 
@@ -219,10 +229,12 @@ def processEnd(self,message):
 def processClose(self,message):
     self.timers.stopAllTimers()
     self.isSASLConfirm = False
-    self.connectionState == ConnectionState.connectionState.getValueByKey('CONNECTION_LOST')
+    connectionState = ConnectionState.connectionState()
+    self.connectionState == connectionState.getValueByKey('CONNECTION_LOST')
 
 def processAttach(self,message):
-    if message.getRole() == RoleCode.roleCode.getValueByKey('RECEIVER'):
+    roleCode = RoleCode.roleCode()
+    if message.getRole() == roleCode.getValueByKey('RECEIVER'):
         for pending in self.pendingMessages:
             h1 = pending.getHandle()
             h2 = message.getHandle()
@@ -246,11 +258,12 @@ def processAttach(self,message):
 def processTransfer(self,message):
     data = message.getData()
     qos = Qos.qos(1)
+    roleCode = RoleCode.roleCode()
     if message.getSettled() is not None and message.getSettled():
         qos = Qos.qos(0)
     else:
         state = AMQPAccepted.amqpAccepted()
-        disposition = AMQPDisposition.amqpDisposition(None,None,None,self.channel,RoleCode.roleCode.getValueByKey('RECEIVER'),Long.long(message.getDeliveryId()),Long.long(message.getDeliveryId()),True,state,None)
+        disposition = AMQPDisposition.amqpDisposition(None,None,None,self.channel,roleCode.getValueByKey('RECEIVER'),Long.long(message.getDeliveryId()),Long.long(message.getDeliveryId()),True,state,None)
         self.send(disposition)
     handle = message.getHandle()
     if handle is not None and (handle in self.usedMappings):

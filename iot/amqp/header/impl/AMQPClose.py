@@ -8,10 +8,13 @@ import iot.amqp.tlv.impl.AMQPError as AMQPError
 
 class amqpClose():
     def __init__(self,code,doff,type,channel,error):
+        self.headerCode = HeaderCode.headerCode()
+        self.amqpType = AMQPType.amqpType()        
+
         if code is not None:
             self.code = code
         else:
-            self.code = HeaderCode.headerCode.getValueByKey('CLOSE')
+            self.code = self.headerCode.getValueByKey('CLOSE')
         if doff is not None:
             self.doff = doff
         else:
@@ -55,7 +58,7 @@ class amqpClose():
         else:
             list.addElement(0, TLVNull.tlvNull())
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
         list.setConstructor(constructor)
         return list
 
@@ -65,7 +68,7 @@ class amqpClose():
             element = list.getList()[0]
             if element is not None and element.isNull() != True:
                 code = element.getCode()
-                if code not in (AMQPType.amqpType.getValueByKey('LIST_0'),AMQPType.amqpType.getValueByKey('LIST_8'),AMQPType.amqpType.getValueByKey('LIST_32')):
+                if code not in (self.amqpType.getValueByKey('LIST_0'),self.amqpType.getValueByKey('LIST_8'),self.amqpType.getValueByKey('LIST_32')):
                     print("Expected type 'ERROR' - received: " + str(element.getCode()))
                 self.error = AMQPError.amqpError(None,None,None)
                 self.error.fromArgumentsList(element)

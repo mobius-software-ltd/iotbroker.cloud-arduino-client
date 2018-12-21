@@ -3,6 +3,7 @@ import iot.mqttsn.sn_classes.SNmessageType as SNmessageType
 class snDisconnect():
     def __init__(self, duration):
         self.duration = duration
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         length = 2
@@ -11,7 +12,7 @@ class snDisconnect():
         return length
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_DISCONNECT')
+        return self.snMessageType.getValueByKey('SN_DISCONNECT')
 
     def getDuration(self):
         return self.duration

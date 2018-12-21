@@ -9,10 +9,13 @@ import iot.amqp.tlv.impl.AMQPError as AMQPError
 
 class amqpDetach():
     def __init__(self,code,doff,type,channel,handle,closed,error):
+        self.headerCode = HeaderCode.headerCode()
+        self.amqpType = AMQPType.amqpType()  
+
         if code is not None:
             self.code = code
         else:
-            self.code = HeaderCode.headerCode.getValueByKey('DETACH')
+            self.code = self.headerCode.getValueByKey('DETACH')
         if doff is not None:
             self.doff = doff
         else:
@@ -61,7 +64,7 @@ class amqpDetach():
         if self.error is not None:
             list.addElement(2, self.error.toArgumentsList())
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
         list.setConstructor(constructor)
         return list
 
@@ -85,7 +88,7 @@ class amqpDetach():
             element = list.getList()[2]
             if element is not None and not element.isNull():
                 code = element.getCode()
-                if code not in (AMQPType.amqpType.getValueByKey('LIST_0'),AMQPType.amqpType.getValueByKey('LIST_8'),AMQPType.amqpType.getValueByKey('LIST_32')):
+                if code not in (self.amqpType.getValueByKey('LIST_0'),self.amqpType.getValueByKey('LIST_8'),self.amqpType.getValueByKey('LIST_32')):
                     print("Expected type 'ERROR' - received: " + str(element.getCode()))
                 self.error = AMQPError.amqpError(None, None, None)
                 self.error.fromArgumentsList(element)

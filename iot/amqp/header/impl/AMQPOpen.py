@@ -8,8 +8,11 @@ import iot.amqp.tlv.impl.TLVList as TLVList
 
 class amqpOpen():
     def __init__(self,code,doff,type,channel,containerId,hostname,maxFrameSize,channelMax,idleTimeout,outgoingLocales,incomingLocales,offeredCapabilities,desiredCapabilities,properties):
+        self.headerCode = HeaderCode.headerCode()
+        self.amqpType = AMQPType.amqpType()
+
         if code is None:
-            self.code = HeaderCode.headerCode.getValueByKey('OPEN')
+            self.code = self.headerCode.getValueByKey('OPEN')
         else:
             self.code = code
 
@@ -85,7 +88,7 @@ class amqpOpen():
         if self.properties is not None and len(self.properties) > 0:
             list.addElement(9, wrapper.wrapMap(self.properties))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
         list.setConstructor(constructor)
         return list
 

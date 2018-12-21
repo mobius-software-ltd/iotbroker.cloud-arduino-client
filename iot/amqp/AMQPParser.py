@@ -52,8 +52,8 @@ class amqpParser():
         length += arguments.getLength()
 
         sections = None
-
-        if header.getCode() == HeaderCode.headerCode.getValueByKey('TRANSFER'):
+        headerCode = HeaderCode.headerCode()
+        if header.getCode() == headerCode.getValueByKey('TRANSFER'):
             sections = header.getSections()
             if sections is not None:
                 for section in sections.values():
@@ -114,8 +114,8 @@ class amqpParser():
         header.setDoff(doff)
         header.setType(type)
         header.setChannel(channel)
-        
-        if header.getCode() == HeaderCode.headerCode.getValueByKey('TRANSFER'):
+        headerCode = HeaderCode.headerCode()
+        if header.getCode() == headerCode.getValueByKey('TRANSFER'):
             header.setSections({})
             while self.index < len(data):
                 headerFactory.setIndex(self.index)

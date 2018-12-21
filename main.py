@@ -1,5 +1,7 @@
 # Arduino_IoTclient
 # Created at 2018-11-21 17:39:59.994769
+
+import iot.websocket.WsClient as WsClient
 import iot.amqp.AMQPclient as AMQPclient
 import iot.coap.CoapClient as CoapClient
 import iot.mqttsn.SNClient as SNClient
@@ -34,60 +36,68 @@ if user.Protocol == 1: #MQTT
     client = MQTTClient.mqttClient(user)
     client.goConnect()
     if client.isConnected():
-        #___________________________________________________________Read_Temperature
         while True:
             sensorValue = adc.read(A0)
             voltage = (sensorValue/4095)*5
-            #print('voltage: ' + str(voltage))
             temp = (voltage -0.5)*100
-            #print('temp: ' + str(temp))
-            client.publish(user.Topics, user.qos, str(temp), user.retain, user.dup)
+            temperature = 'temperature: {:00.2f}'.format(temp)
+            client.publish(user.Topics, user.qos, temperature, user.retain, user.dup)
             sleep(user.timeout*1000)
     else:
         print('Error occured while connection (MQTT)...')
+#___________________________________________________________________MQTTSN
 elif user.Protocol == 2: #MQTTSN
     client = SNClient.snClient(user)
     client.goConnect()
     if client.isConnected():
-        #___________________________________________________________Read_Temperature
         while True:
             sensorValue = adc.read(A0)
             voltage = (sensorValue/4095)*5
-            #print('voltage: ' + str(voltage))
             temp = (voltage -0.5)*100
-            #print('temp: ' + str(temp))
-            client.publish(user.Topics, user.qos, str(temp), user.retain, user.dup)
+            temperature = 'temperature: {:00.2f}'.format(temp)
+            client.publish(user.Topics, user.qos, temperature, user.retain, user.dup)
             sleep(user.timeout*1000)
     else:
         print('Error occured while connection (MQTTSN)...')
+#___________________________________________________________________COAP
 elif user.Protocol == 3: #COAP
     client = CoapClient.coapClient(user)
     client.goConnect()
     if client.isConnected():
-        #___________________________________________________________Read_Temperature
         while True:
             sensorValue = adc.read(A0)
             voltage = (sensorValue/4095)*5
-            #print('voltage: ' + str(voltage))
             temp = (voltage -0.5)*100
-            #print('temp: ' + str(temp))
-            client.publish(user.Topics, user.qos, str(temp), user.retain, user.dup)
+            temperature = 'temperature: {:00.2f}'.format(temp)
+            client.publish(user.Topics, user.qos, temperature, user.retain, user.dup)
             sleep(user.timeout*1000)
     else:
         print('Error occured while connection (COAP)...')
-elif user.Protocol == 4: #AMQP
-    client = AMQPclient.amqpClient(user)
+#___________________________________________________________________WebSockets
+elif user.Protocol == 4: #WS
+    client = WsClient.wsClient(user)
     client.goConnect()
     if client.isConnected():
-        #___________________________________________________________Read_Temperature
         while True:
             sensorValue = adc.read(A0)
             voltage = (sensorValue/4095)*5
-            #print('voltage: ' + str(voltage))
             temp = (voltage -0.5)*100
-            #print('temp: ' + str(temp))
-            client.publish(user.Topics, user.qos, str(temp), user.retain, user.dup)
+            temperature = 'temperature: {:00.2f}'.format(temp)
+            client.publish(user.Topics, user.qos, temperature, user.retain, user.dup)
+            sleep(user.timeout*1000)
+    else:
+        print('Error occured while connection (WebSockets)...')
+#___________________________________________________________________AMQP
+elif user.Protocol == 5: #AMQP
+    client = AMQPclient.amqpClient(user)
+    client.goConnect()
+    if client.isConnected():
+        while True:
+            sensorValue = adc.read(A0)
+            voltage = (sensorValue/4095)*5
+            temp = (voltage -0.5)*100
+            temperature = 'temperature: {:00.2f}'.format(temp)
+            client.publish(user.Topics, user.qos, temperature, user.retain, user.dup)
             sleep(user.timeout*1000)
     else:
         print('Error occured while connection (AMQP)...')
-        

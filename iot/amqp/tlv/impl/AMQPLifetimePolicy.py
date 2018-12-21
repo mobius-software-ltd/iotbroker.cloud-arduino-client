@@ -7,10 +7,11 @@ import iot.amqp.tlv.impl.TLVFixed as TLVFixed
 class amqpLifetimePolicy():
     def __init__(self, code):
         self.code = code
+        self.amqpType = AMQPType.amqpType()
 
     def getList(self):
         list = TLVList.tlvList(None, None)
-        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), self.code.value))
         list.setConstructor(constructor)
         return list
 

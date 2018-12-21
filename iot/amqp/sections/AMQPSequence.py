@@ -9,6 +9,8 @@ import iot.amqp.tlv.impl.TLVList as TLVList
 class amqpSequence():
     def __init__(self, sequence):
         self.sequence = sequence
+        self.amqpType = AMQPType.amqpType()
+        self.sectionCode = SectionCode.sectionCode()
 
     def getValue(self):
         list = TLVList.tlvList(None, None)
@@ -16,7 +18,7 @@ class amqpSequence():
         if self.sequence is not None and len(self.sequence) > 0:
             list = wrapper.wrapList(self.sequence)
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x76))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x76))
         list.setConstructor(constructor)
         return list
 
@@ -26,7 +28,7 @@ class amqpSequence():
             self.sequence = unwrapper.unwrapList(list)
 
     def getCode(self):
-        return SectionCode.sectionCode.getValueByKey('SEQUENCE')
+        return self.sectionCode.getValueByKey('SEQUENCE')
 
     def toString(self):
         return 'AMQPSequence [sequence=' + str(self.sequence) + ']'

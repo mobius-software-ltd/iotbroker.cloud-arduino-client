@@ -7,6 +7,7 @@ class snConnect():
         self.duration = duration
         self.clientID = clientID
         self.protocolID = 1
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         if self.clientID is None or len(self.clientID) == 0:
@@ -15,7 +16,7 @@ class snConnect():
         return length
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_CONNECT')
+        return self.snMessageType.getValueByKey('SN_CONNECT')
 
     def getWillPresent(self):
         return self.willPresent

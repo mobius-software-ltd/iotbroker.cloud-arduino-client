@@ -12,6 +12,7 @@ class amqpError():
         self.condition = condition
         self.description = description
         self.info = info
+        self.amqpType = AMQPType.amqpType()
 
     def toArgumentsList(self):
         wrapper = AMQPWrapper.amqpWrapper()
@@ -23,7 +24,7 @@ class amqpError():
         if self.info is not None:
             list.addElement(2, wrapper.wrap(self.info))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x1D))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(),TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x1D))
         list.setConstructor(constructor)
         return list
 

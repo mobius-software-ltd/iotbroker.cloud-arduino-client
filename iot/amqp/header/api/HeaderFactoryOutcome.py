@@ -10,14 +10,15 @@ class headerFactoryOutcome():
     def getOutcome(list):
         outcome = None
         byteCode = list.getConstructor().getDescriptorCode()
-        code = StateCode.stateCode(byteCode)
-        if code == StateCode.stateCode.getValueByKey('ACCEPTED'):
+        stateCode = StateCode.stateCode()
+        code = stateCode.getKeyByValue(byteCode)
+        if code == 'ACCEPTED':
             outcome = AMQPAccepted.amqpAccepted()
-        elif code == StateCode.stateCode.getValueByKey('MODIFIED'):
+        elif code == 'MODIFIED':
             outcome = AMQPModified.amqpModified(None ,None ,None)
-        elif code == StateCode.stateCode.getValueByKey('REJECTED'):
+        elif code == 'REJECTED':
             outcome = AMQPRejected.amqpRejected(None)
-        elif code == StateCode.stateCode.getValueByKey('RELEASED'):
+        elif code == 'RELEASED':
             outcome = AMQPReleased.amqpReleased()
         else:
             print('Received header with unrecognized outcome code')
@@ -26,16 +27,17 @@ class headerFactoryOutcome():
     def getState(list):
         state = None
         byteCode = list.getConstructor().getDescriptorCode()
-        code = StateCode.stateCode(byteCode)
-        if code == StateCode.stateCode.getValueByKey('ACCEPTED'):
+        stateCode = StateCode.stateCode()
+        code = stateCode.getKeyByValue(byteCode)
+        if code == 'ACCEPTED':
             state = AMQPAccepted.amqpAccepted()
-        elif code == StateCode.stateCode.getValueByKey('MODIFIED'):
+        elif code == 'MODIFIED':
             state = AMQPModified.amqpModified(None ,None ,None)
-        elif code == StateCode.stateCode.getValueByKey('RECEIVED'):
+        elif code == 'RECEIVED':
             state = AMQPReceived.amqpReceived(None,None)
-        elif code == StateCode.stateCode.getValueByKey('REJECTED'):
+        elif code == 'REJECTED':
             state = AMQPRejected.amqpRejected(None)
-        elif code == StateCode.stateCode.getValueByKey('RELEASED'):
+        elif code == 'RELEASED':
             state = AMQPReleased.amqpReleased()
         else:
             print('Received header with unrecognized state code')

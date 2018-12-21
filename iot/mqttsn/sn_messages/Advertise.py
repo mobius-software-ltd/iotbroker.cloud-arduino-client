@@ -4,12 +4,13 @@ class advertise():
     def __init__(self, gwID, duration):
         self.gwID = gwID
         self.duration = duration
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         return 5
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_ADVERTISE')
+        return self.snMessageType.getValueByKey('SN_ADVERTISE')
 
     def getgwID(self):
         return self.gwID

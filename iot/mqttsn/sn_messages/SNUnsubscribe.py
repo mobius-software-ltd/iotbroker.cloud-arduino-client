@@ -4,6 +4,7 @@ class snUnsubscribe():
     def __init__(self, packetID, topic):
         self.packetID = packetID
         self.topic = topic
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         length = 5
@@ -14,7 +15,7 @@ class snUnsubscribe():
         return length
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_UNSUBSCRIBE')
+        return self.snMessageType.getValueByKey('SN_UNSUBSCRIBE')
 
     def getPacketID(self):
         return self.packetID

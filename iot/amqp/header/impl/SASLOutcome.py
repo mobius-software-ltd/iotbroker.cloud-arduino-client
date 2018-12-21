@@ -9,10 +9,13 @@ import iot.amqp.tlv.impl.TLVList as TLVList
 
 class saslOutcome():
     def __init__(self,code,doff,type,channel,outcomeCode,additionalData):
+        self.headerCode = HeaderCode.headerCode()
+        self.amqpType = AMQPType.amqpType()
+
         if code is not None:
             self.code = code
         else:
-            self.code = HeaderCode.headerCode.getValueByKey('OUTCOME')
+            self.code = self.headerCode.getValueByKey('OUTCOME')
         if doff is not None:
             self.doff = doff
         else:
@@ -60,7 +63,7 @@ class saslOutcome():
         if self.additionalData is not None:
             list.addElement(1, wrapper.wrap(self.additionalData))
 
-        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(AMQPType.amqpType.getValueByKey('SMALL_ULONG'), 0x44))
+        constructor = DescribedConstructor.describedConstructor(list.getCode(), TLVFixed.tlvFixed(self.amqpType.getValueByKey('SMALL_ULONG'), 0x44))
         list.setConstructor(constructor)
         return list
 

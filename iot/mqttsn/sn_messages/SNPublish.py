@@ -7,6 +7,7 @@ class snPublish():
         self.content = content
         self.dup = dup
         self.retain = retain
+        self.snMessageType = SNmessageType.snMessageType()
 
     def getLength(self):
         length = 7
@@ -17,7 +18,7 @@ class snPublish():
         return length
 
     def getType(self):
-        return SNmessageType.snMessageType.getValueByKey('SN_PUBLISH')
+        return self.snMessageType.getValueByKey('SN_PUBLISH')
 
     def getPacketID(self):
         return self.packetID
