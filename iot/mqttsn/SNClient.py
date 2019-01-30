@@ -1,7 +1,6 @@
-import iot.classes.ConnectionState as ConnectionState
 import iot.classes.Qos as Qos
 import iot.classes.QosType as QosType
-import iot.network.UdpClient as UdpClient 
+import iot.network.UdpClient as UdpClient
 import iot.mqttsn.SNParser as SNParser
 import iot.timers.TimersMap as TimersMap
 import iot.mqttsn.sn_classes.ReturnCode as ReturnCode
@@ -28,7 +27,6 @@ class snClient():
         self.account = account
         self.parser = SNParser.snParser(None)
         self.resendperiod = 3000
-        self.connectionState = None
         self.data = None
         self.udpClient = None
         self.timers = TimersMap.timersMap(self)
@@ -36,13 +34,13 @@ class snClient():
         self.registerID = 0
         self.publishPackets = {}
         self.topics = {}
-        self.connectionStateEnum = ConnectionState.connectionState()
+        self.connectionState = 0
         self.snMessageType = SNmessageType.snMessageType()
         self.returnCode = ReturnCode.returnCode()
         self.QosType = QosType.qosType()
 
     def send(self, message):
-        if self.connectionState == self.connectionStateEnum.getValueByKey('CONNECTION_ESTABLISHED'):
+        if self.connectionState == 5: #CONNECTION_ESTABLISHED
             self.parser.setMessage(message)
             message = self.parser.encode()
             self.udpClient.sendMessage(message)
@@ -53,21 +51,21 @@ class snClient():
         message = self.parser.decode(data)
         process_messageType_method(self, message.getType(), message)
 
-    def setState(self, ConnectionState):
-        self.connectionState = ConnectionState
+    def setState(self, connectionState):
+        self.connectionState = connectionState
 
     def getConnectionState(self):
         return self.connectionState
 
     def goConnect(self):
-        self.setState(self.connectionStateEnum.getValueByKey('CONNECTING'))
+        self.setState(4) #CONNECTING
 
         if self.account.will is not None and len(self.account.will)> 0:
             willPresent = True
         else:
             willPresent = False
 
-        cleanSession = self.account.cleanSession
+        cleanSession = self.account.isClean
         duration = self.account.keepAlive
         clientID = self.account.clientID
         connect = SNConnect.snConnect(willPresent, cleanSession, duration, clientID)
@@ -78,9 +76,9 @@ class snClient():
 
         self.parser.setMessage(connect)
         message = self.parser.encode()
-        
-        self.UdpClient = UdpClient.udpClient(self.account.serverHost, self.account.port, self)
-        if self.account.isSecure:
+
+        self.UdpClient = UdpClient.udpClient(self.account.host, self.account.port, self)
+        if self.account.enable:
             self.UdpClient.connectSecure(self.account.cert_path, self.account.key_path)
         else:
             self.UdpClient.connect()
@@ -127,16 +125,16 @@ class snClient():
             self.timers.stopAllTimers()
         if self.client != None:
             self.client.stop()
-            self.setState(self.connectionStateEnum.getValueByKey('CONNECTION_LOST'))
+            self.setState(7) #CONNECTION_LOST
 
     def connected(self):
-        self.setState(self.connectionStateEnum.getValueByKey('CHANNEL_ESTABLISHED'))
+        self.setState(5) #CONNECTION_ESTABLISHED
 
     def connectFailed(self):
-        self.setState(self.connectionStateEnum.getValueByKey('CHANNEL_FAILED'))
-        
+        self.setState(3) #CHANNEL_FAILED
+
     def isConnected(self):
-        return self.connectionState == self.connectionState.getValueByKey('CONNECTION_ESTABLISHED')
+        return self.connectionState == 5 #CONNECTION_ESTABLISHED
 
 #__________________________________________________________________________________________
 def processADVERTISE(self,message):
@@ -152,7 +150,7 @@ def processCONNECT(self,message):
     print('Packet Connect did receive')
 
 def processCONNACK(self,message):
-    self.setState(self.connectionStateEnum.getValueByKey('CONNECTION_ESTABLISHED'))
+    self.setState(5) #CONNECTION_ESTABLISHED
     self.timers.stopConnectTimer()
     self.timers.goPingTimer(SNPingreq.snPingreq(self.account.clientID), self.account.keepAlive)
     print('Connack received code= ' + str(message.getCode()))
@@ -160,7 +158,7 @@ def processCONNACK(self,message):
 def processWILL_TOPIC_REQ(self,message):
     qos = Qos.qos(self.account.qos)
     topic = FullTopic.fullTopic(self.account.willTopic, qos)
-    retain = self.account.isRetain
+    retain = self.account.retain
     willTopic = WillTopic.willTopic(retain, topic)
     self.send(willTopic)
 

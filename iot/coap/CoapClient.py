@@ -1,5 +1,4 @@
-import iot.classes.ConnectionState as ConnectionState
-import iot.network.UdpClient as UdpClient 
+import iot.network.UdpClient as UdpClient
 import iot.coap.CoapParser as CoapParser
 import iot.coap.options.CoapOptionType as CoapOptionType
 import iot.coap.options.OptionParser as OptionParser
@@ -16,7 +15,6 @@ class coapClient():
         self.parser = CoapParser.coapParser()
         self.parserOption = OptionParser.optionParser()
         self.resendperiod = 3000
-        self.connectionState = None
         self.data = None
         self.udpClient = None
         self.timers = TimersMap.timersMap(self)
@@ -25,13 +23,13 @@ class coapClient():
         self.forSubscribe = {}
         self.forUnsubscribe = {}
         self.pingNum = 0
-        self.connectionStateEnum = ConnectionState.connectionState()
+        self.connectionState = 0
         self.coapOptionType = CoapOptionType.coapOptionType()
         self.coapType = CoapType.coapType()
         self.coapCode = CoapCode.coapCode()
 
     def goConnect(self):
-        self.setState(self.connectionStateEnum.getValueByKey('CONNECTING'))
+        self.setState(4) #CONNECTING
 
         duration = self.account.keepAlive
 
@@ -42,15 +40,15 @@ class coapClient():
         options = []
         options.append(option)
         message = CoapMessage.coapMessage(self.Version,self.coapType.getValueByKey('CONFIRMABLE'),self.coapCode.getValueByKey('PUT'),0,None,options,None)
-        self.udpClient = UdpClient.udpClient(self.account.serverHost, self.account.port, self)
-        if self.account.isSecure:
+        self.udpClient = UdpClient.udpClient(self.account.host, self.account.port, self)
+        if self.account.enable:
             self.udpClient.connectSecure(self.account.cert_path, self.account.key_path)
         else:
             self.udpClient.connect()
         self.timers.goPingTimer(message,duration)
 
     def send(self, message):
-        if self.connectionState == self.connectionStateEnum.getValueByKey('CONNECTION_ESTABLISHED'):
+        if self.connectionState == 5: #CONNECTION_ESTABLISHED
             message = self.parser.encode(message)
             self.udpClient.sendMessage(message)
         else:
@@ -139,7 +137,7 @@ class coapClient():
 
     def pingreq(self):
         pass
-	
+
     def disconnectWith(self,duration):
         self.timers.stopAllTimers()
 
@@ -148,16 +146,16 @@ class coapClient():
         print('Timeout ...')
 
     def ConnectionLost(self):
-        self.setState(self.connectionStateEnum.getValueByKey('CONNECTION_LOST'))
+        self.setState(7) #CONNECTION_LOST
 
     def connected(self):
-        self.setState(self.connectionStateEnum.getValueByKey('CHANNEL_ESTABLISHED'))
+        self.setState(5) #CONNECTION_ESTABLISHED
 
     def connectFailed(self):
-        self.setState(self.connectionStateEnum.getValueByKey('CHANNEL_FAILED'))
-        
+        self.setState(3) #CHANNEL_FAILED
+
     def isConnected(self):
-        return self.connectionState == self.connectionState.getValueByKey('CONNECTION_ESTABLISHED')
+        return self.connectionState == 5 #CONNECTION_ESTABLISHED
 
 #__________________________________________________________________________________________
 
@@ -231,7 +229,7 @@ def ACKNOWLEDGEMENT(self,message):
     else:
         if self.pingNum == 0:
             self.pingNum +=1
-		
+
 def RESET(self,message):
     if isinstance(message, CoapMessage):
         self.timers.removeTimer(int(message.getToken()))

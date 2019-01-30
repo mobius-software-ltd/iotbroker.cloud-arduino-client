@@ -1,4 +1,3 @@
-import iot.classes.ConnectionState as ConnectionState
 import iot.classes.Qos as Qos
 import iot.mqtt.mqtt_classes.MQTTTopic as MQTTTopic
 import iot.network.WebSocketsClient as WebSocketsClient
@@ -8,20 +7,18 @@ import iot.network.wsUtil.WsMessage as WsMessage
 import iot.network.wsUtil.WsParser as WsParser
 import base64
 
-
 class wsClient():
     def __init__(self, account):
         self.account = account
         self.resendperiod = 3000
-        self.connectionState = None
         self.data = None
         self.timers = TimersMap.timersMap(self)
         self.publishPackets = {}
-        self.connectionStateEnum = ConnectionState.connectionState()
+        self.connectionState = 0
         self.opCode = OpCode.opCode()
 
     def send(self, message):
-        if self.connectionState == self.connectionStateEnum.getValueByKey('CONNECTION_ESTABLISHED'):
+        if self.connectionState == 5: #CONNECTION_ESTABLISHED
             data = WsParser.wsParser.encode(message)
             self.wsClient.sendMessage(data)
         else:
@@ -34,19 +31,19 @@ class wsClient():
         self.connectionState = connectionState
 
     def goConnect(self):
-        self.setState(self.connectionStateEnum.getValueByKey('CONNECTING'))
+        self.setState(4) #CONNECTING
         if self.account.willTopic and len(self.account.willTopic)>0 is not None:
             will = {"topic": {"name": self.account.willTopic, "qos": self.account.qos},
                     "content": base64.standard_b64encode(self.account.will.encode()).decode("utf-8"),
-                    "retain": self.account.isRetain}
+                    "retain": self.account.retain}
             willFlag = True
         else:
             will = None
             willFlag = False
 
-        self.wsClient = WebSocketsClient.wsTransport(self.account.serverHost, self.account.port, self)
-        if self.account.isSecure:
-            self.wsClient.connectSecure(self.account.cert_path, self.account.key_path) 
+        self.wsClient = WebSocketsClient.wsTransport(self.account.host, self.account.port, self)
+        if self.account.enable:
+            self.wsClient.connectSecure(self.account.cert_path, self.account.key_path)
         else:
             self.wsClient.connect()
 
@@ -61,12 +58,12 @@ class wsClient():
             passwordFlag = False
 
         connect = {"packet": 1, "protocolLevel": 4, "username": self.account.username, "password": self.account.password,
-             "clientID": self.account.clientID, "cleanSession": self.account.cleanSession, "keepalive": self.account.keepAlive, "will": will, "willFlag": willFlag,
+             "clientID": self.account.clientID, "cleanSession": self.account.isClean, "keepalive": self.account.keepAlive, "will": will, "willFlag": willFlag,
              "passwordFlag": passwordFlag, "usernameFlag": usernameFlag, "protocolName": "MQTT"}
 
         if self.timers is not None:
             self.timers.stopAllTimers()
-        
+
         message = WsMessage.wsMessage(True, self.opCode.getValueByKey('TEXT'), True, connect)
         self.timers.goConnectTimer(message)
 
@@ -144,16 +141,16 @@ class wsClient():
             self.timers.stopAllTimers()
         if self.client != None:
             self.client.stop()
-            self.setState(self.connectionStateEnum.getValueByKey('CONNECTION_LOST'))
+            self.setState(7) #CONNECTION_LOST
 
     def connected(self):
-        self.setState(self.connectionStateEnum.getValueByKey('CHANNEL_ESTABLISHED'))
+        self.setState(5) #CONNECTION_ESTABLISHED
 
     def connectFailed(self):
-        self.setState(self.connectionStateEnum.getValueByKey('CHANNEL_FAILED'))
-        
+        self.setState(3) #CHANNEL_FAILED
+
     def isConnected(self):
-        return self.connectionState == self.connectionState.getValueByKey('CONNECTION_ESTABLISHED')
+        return self.connectionState == 5 #CONNECTION_ESTABLISHED
 
 #__________________________________________________________________________________________
 
@@ -164,7 +161,7 @@ def processConnack(self,message):
     self.timers.goPingTimer(message, self.account.keepAlive)
 
     if message['returnCode'] == 0: #MQ_ACCEPTED
-        self.setState(self.connectionStateEnum.getValueByKey('CONNECTION_ESTABLISHED'))
+        self.setState(5) #CONNECTION_ESTABLISHED
         print('Connack received...')
 
 def processSuback(self,message):

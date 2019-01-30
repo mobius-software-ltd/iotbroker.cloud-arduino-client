@@ -13,21 +13,19 @@ import iot.mqtt.mqtt_classes.Will as Will
 import iot.mqtt.MQTTParser as MQTTParser
 import iot.timers.TimersMap as TimersMap
 import iot.network.TcpClient as TcpClient
-import iot.classes.ConnectionState as ConnectionState
 
 class mqttClient():
     def __init__(self, account):
         self.account = account
         self.parser = MQTTParser.mqttParser(None)
         self.resendperiod = 3000
-        self.connectionState = None
         self.data = None
         self.timers = TimersMap.timersMap(self)
         self.publishPackets = {}
-        self.connectionState = ConnectionState.connectionState()
+        self.connectionState = 0
 
     def send(self, message):
-        if self.connectionState == self.connectionState.getValueByKey('CONNECTION_ESTABLISHED'):
+        if self.connectionState == 5: #CONNECTION_ESTABLISHED
             self.parser.setMessage(message)
             message = self.parser.encode()
             self.TcpClient.sendMessage(message)
@@ -38,31 +36,29 @@ class mqttClient():
         message = self.parser.decode(data)
         process_messageType_method(self, message.getType(), message)
 
-    def setState(self, ConnectionState):
-        self.connectionState = ConnectionState
-    
+    def setState(self, connectionState):
+        self.connectionState = connectionState
+
     def isConnected(self):
-        return self.connectionState == self.connectionState.getValueByKey('CONNECTION_ESTABLISHED')
+        return self.connectionState == 5 #CONNECTION_ESTABLISHED
 
     def closeChannel(self):
         if self.client != None:
             self.client.stop()
 
     def goConnect(self):
-        self.setState(self.connectionState.getValueByKey('CONNECTING'))
+        self.setState(4) #CONNECTING
         if self.account.willTopic is not None:
             topic = MQTTTopic.mqttTopic(self.account.willTopic, self.account.qos)
-            will = Will.will(topic, self.account.will, self.account.isRetain)
+            will = Will.will(topic, self.account.will, self.account.retain)
         else:
             will = None
-
-        connect = MQTTConnect.mqttConnect(self.account.username, self.account.password, self.account.clientID, self.account.cleanSession,self.account.keepAlive, will)
+        connect = MQTTConnect.mqttConnect(self.account.username, self.account.password, self.account.clientID, self.account.isClean, self.account.keepAlive, will)
         if self.timers is not None:
             self.timers.stopAllTimers()
-        
-        self.TcpClient = TcpClient.tcpClient(self.account.serverHost, self.account.port, self)
-        if self.account.isSecure:
-            self.TcpClient.connectSecure(self.account.cert_path, self.account.key_path)
+        self.TcpClient = TcpClient.tcpClient(self.account.host, self.account.port, self)
+        if self.account.enable:
+            self.TcpClient.connectSecure(certificates.CA_CERT, certificates.P_KEY)
         else:
             self.TcpClient.connect()
         self.send(connect)
@@ -106,7 +102,7 @@ class mqttClient():
             self.timers.stopAllTimers()
         if self.client != None:
             self.client.stop()
-            self.setState(self.connectionState.getValueByKey('CONNECTION_LOST'))
+            self.setState(7) #CONNECTION_LOST
 #__________________________________________________________________________________________
 
 def processConnack(self,message):
@@ -205,4 +201,3 @@ switcherProcess = {
 
 def process_messageType_method(self, argument, message):
     return switcherProcess[argument].__call__(self, message)
-

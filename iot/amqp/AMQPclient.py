@@ -15,7 +15,6 @@ import iot.amqp.terminus.AMQPTarget as AMQPTarget
 import iot.amqp.wrappers.AMQPMessageFormat as AMQPMessageFormat
 import iot.amqp.avps.OutcomeCode as OutcomeCode
 import iot.amqp.numeric.NumericUtil as NumericUtil
-import iot.classes.ConnectionState as ConnectionState
 import iot.mqtt.mqtt_classes.MQTTTopic as MQTTTopic
 import iot.network.TcpClient as TcpClient
 import iot.amqp.AMQPParser as AMQPParser
@@ -35,7 +34,7 @@ class amqpClient():
         self.account = account
         self.parser = AMQPParser.amqpParser()
         self.nextHandle = 1
-        self.connectionState = None
+        self.connectionState = 0
         self.channel = 0
         self.isSASLConfirm = False
         self.timers = TimersMap.timersMap(self)
@@ -46,8 +45,7 @@ class amqpClient():
         self.timeout = 0
 
     def send(self, header):
-        connectionState = ConnectionState.connectionState()
-        if self.connectionState == connectionState.getValueByKey('CONNECTION_ESTABLISHED'):
+        if self.connectionState == 5: #CONNECTION_ESTABLISHED
             message = self.parser.encode(header)
             self.TcpClient.sendMessage(message)
         else:
@@ -66,15 +64,14 @@ class amqpClient():
             process_messageType_method(self, message.getCode().value, message)
 
     def goConnect(self):
-        connectionState = ConnectionState.connectionState()
-        self.setState(connectionState.getValueByKey('CONNECTING'))
+        self.setState(4) #CONNECTING
         header = AMQPProtoHeader.amqpProtoHeader(3)  # SASL = 3
-        self.TcpClient = TcpClient.tcpClient(self.account.serverHost, self.account.port, self)
-        if self.account.isSecure:
+        self.TcpClient = TcpClient.tcpClient(self.account.host, self.account.port, self)
+        if self.account.enable:
             self.TcpClient.connectSecure(self.account.cert_path, self.account.key_path)
         else:
             self.TcpClient.connect()
-        self.setState(connectionState.getValueByKey('CONNECTION_ESTABLISHED'))
+        self.setState(5) #CONNECTION_ESTABLISHED
         self.send(header)
 
     def publish(self, name, qos, content, retain, dup):
@@ -158,15 +155,15 @@ class amqpClient():
 
     def setState(self, connectionState):
         self.connectionState = connectionState
-        
+
     def isConnected(self):
-        return self.connectionState == self.connectionState.getValueByKey('CONNECTION_ESTABLISHED')
+        return self.connectionState == 5 #CONNECTION_ESTABLISHED
 
 #__________________________________________________________________________________________
 
 def processProto(self,message):
     if self.isSASLConfirm and message.getProtocolId() == 0:
-        open  = AMQPOpen.amqpOpen(None,None,None,message.getChannel(),self.account.clientID,self.account.serverHost,None,None,Long.long(50*1000),None,None,None,None,None)
+        open  = AMQPOpen.amqpOpen(None,None,None,message.getChannel(),self.account.clientID,self.account.host,None,None,Long.long(50*1000),None,None,None,None,None)
         self.send(open)
 
 def processMechanisms(self,message):
@@ -229,8 +226,7 @@ def processEnd(self,message):
 def processClose(self,message):
     self.timers.stopAllTimers()
     self.isSASLConfirm = False
-    connectionState = ConnectionState.connectionState()
-    self.connectionState == connectionState.getValueByKey('CONNECTION_LOST')
+    self.connectionState == 7 #CONNECTION_LOST
 
 def processAttach(self,message):
     roleCode = RoleCode.roleCode()
@@ -336,6 +332,3 @@ switcherProcess = {
 
 def process_messageType_method(self, argument, message):
     return switcherProcess[argument].__call__(self, message)
-
-
-
