@@ -126,7 +126,7 @@ TLVAMQP *AMQPWrapper::wrapObject(JsonVariant *object)
 
 TLVAMQP *AMQPWrapper::wrapBool(bool value)
 {
-    unsigned char * data = malloc(sizeof(char));
+    unsigned char * data = (unsigned char *) malloc(sizeof(char));
     AMQPType *type = new AMQPType(value ? AMQP_BOOLEAN_TRUE_TYPE : AMQP_BOOLEAN_FALSE_TYPE);
     return new AMQPTLVFixed(type, data);
 }
@@ -139,7 +139,7 @@ TLVAMQP *AMQPWrapper::wrapUByte(short value)
     }
 
     AMQPType *type = new AMQPType(AMQP_UBYTE_TYPE);
-    unsigned char * data = malloc(sizeof(char));
+    unsigned char * data = (unsigned char *) malloc(sizeof(char));
     data[0] = value;
     return new AMQPTLVFixed(type, data);
 }
@@ -147,7 +147,7 @@ TLVAMQP *AMQPWrapper::wrapUByte(short value)
 TLVAMQP *AMQPWrapper::wrapByte(char value)
 {
     AMQPType *type = new AMQPType(AMQP_BYTE_TYPE);
-    unsigned char * data = malloc(sizeof(char));
+    unsigned char * data = (unsigned char *) malloc(sizeof(char));
     data[0] = value;
     return new AMQPTLVFixed(type, data);
 }
@@ -337,7 +337,7 @@ AMQPTLVVariable *AMQPWrapper::wrapSymbol(AMQPSymbol *value)
     return new AMQPTLVVariable(type, bytes);
 }
 
-AMQPTLVList *AMQPWrapper::wrapList(list<JsonVariant *> value)
+AMQPTLVList *AMQPWrapper::wrapList(std::list<JsonVariant *> value)
 {
     if (value.size() == 0) {
         printf("AMQPWrapper::wrapList");
@@ -353,7 +353,7 @@ AMQPTLVList *AMQPWrapper::wrapList(list<JsonVariant *> value)
     return list;
 }
 
-AMQPTLVMap *AMQPWrapper::wrapMap(map<JsonVariant *, JsonVariant *> value)
+AMQPTLVMap *AMQPWrapper::wrapMap(std::map<JsonVariant *, JsonVariant *> value)
 {
     if (value.count() == 0) {
         printf("AMQPWrapper::wrapMap");
@@ -369,7 +369,7 @@ AMQPTLVMap *AMQPWrapper::wrapMap(map<JsonVariant *, JsonVariant *> value)
     return map;
 }
 
-AMQPTLVArray *AMQPWrapper::wrapArray(list<JsonVariant *> value)
+AMQPTLVArray *AMQPWrapper::wrapArray(std::list<JsonVariant *> value)
 {
     if (value.count() == 0) {
         printf("AMQPWrapper::wrapArray");

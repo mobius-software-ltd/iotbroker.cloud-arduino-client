@@ -25,6 +25,7 @@
 #include "iot-protocols/amqp/classes/tlv/fixed/amqptlvfixed.h"
 #include "iot-protocols/amqp/classes/tlv/fixed/amqptlvnull.h"
 #include "iot-protocols/amqp/classes/amqpsimpletype.h"
+#include "iot-protocols/amqp/classes/wrappers/amqpsymbol.h"
 
 AMQPFlow::AMQPFlow() : AMQPHeader(new AMQPHeaderCode(AMQP_FLOW_HEADER_CODE))
 {
@@ -38,7 +39,6 @@ AMQPFlow::AMQPFlow() : AMQPHeader(new AMQPHeaderCode(AMQP_FLOW_HEADER_CODE))
     this->avaliable = NULL;
     this->drain = NULL;
     this->echo = NULL;
-    this->properties = NULL;
 }
 
 int AMQPFlow::getLength()
@@ -123,11 +123,11 @@ AMQPTLVList *AMQPFlow::arguments()
         list->addElementWithIndex(9, AMQPWrapper::wrapBool(AMQPSimpleType::variantToBool(this->echo)));
     }
 
-    if (this->properties.count() != 0) {
+    if (this->properties.size() != 0) {
         list->addElementWithIndex(10, AMQPWrapper::wrapMap(this->properties));
     }
 
-    unsigned char * data = malloc(sizeof(char));
+    unsigned char * data = (unsigned char *) malloc(sizeof(unsigned char));
     data[0] = this->code->getValue();
     AMQPType *type = new AMQPType(AMQP_SMALL_ULONG_TYPE);
     AMQPTLVFixed *fixed = new AMQPTLVFixed(type, data);
@@ -141,7 +141,7 @@ AMQPTLVList *AMQPFlow::arguments()
 
 void AMQPFlow::fillArguments(AMQPTLVList *list)
 {
-    int size = list->getList().count();
+    int size = list->getList().size();
 
     if (size < 4) {
         printf("AMQPFlow::arguments::wrong_size");
@@ -239,8 +239,8 @@ void AMQPFlow::fillArguments(AMQPTLVList *list)
 void AMQPFlow::addProperty(String key, JsonVariant *value)
 {
     JsonVariant *variantKey;
-    variantKey.set(AMQPSimpleType::symbolToVariant(new AMQPSymbol(key)));
-    this->properties.insert(variantKey, value);
+    variantKey->set(AMQPSimpleType::symbolToVariant(new AMQPSymbol(key)));
+    this->properties[variantKey] = value;
 }
 
 JsonVariant *AMQPFlow::getNextIncomingId() const
@@ -343,12 +343,12 @@ void AMQPFlow::setEcho(JsonVariant *value)
     echo = value;
 }
 
-map<JsonVariant *, JsonVariant *> AMQPFlow::getProperties() const
+std::map<JsonVariant *, JsonVariant *> AMQPFlow::getProperties() const
 {
     return properties;
 }
 
-void AMQPFlow::setProperties(const map<JsonVariant *, JsonVariant *> &value)
+void AMQPFlow::setProperties(const std::map<JsonVariant *, JsonVariant *> &value)
 {
     properties = value;
 }

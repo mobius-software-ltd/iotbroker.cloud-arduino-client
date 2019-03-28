@@ -353,7 +353,7 @@ unsigned char * AMQPUnwrapper::unwrapBinary(TLVAMQP *tlv)
     return tlv->getValue();
 }
 
-QUuid AMQPUnwrapper::unwrapUUID(TLVAMQP *tlv)
+String AMQPUnwrapper::unwrapUUID(TLVAMQP *tlv)
 {
     if (tlv->getTypeValue() != AMQP_UUID_TYPE) {
         printf("AMQPUnwrapper::unwrapUUID");
@@ -362,7 +362,7 @@ QUuid AMQPUnwrapper::unwrapUUID(TLVAMQP *tlv)
     return tlv->getValue();
 }
 
-list<JsonVariant *> AMQPUnwrapper::unwrapList(TLVAMQP *tlv)
+std::list<JsonVariant *> AMQPUnwrapper::unwrapList(TLVAMQP *tlv)
 {
     if (tlv->getTypeValue() != AMQP_LIST0_TYPE &&
             tlv->getTypeValue() != AMQP_LIST8_TYPE &&
@@ -370,7 +370,7 @@ list<JsonVariant *> AMQPUnwrapper::unwrapList(TLVAMQP *tlv)
         printf("AMQPUnwrapper::unwrapList");
         return list<JsonVariant *>();
     }
-    list<JsonVariant *> result = list<JsonVariant *>();
+    std::list<JsonVariant *> result = list<JsonVariant *>();
 
     foreach (TLVAMQP *item, ((AMQPTLVList *)tlv)->getList()) {
         result.push_back(AMQPUnwrapper::unwrap(item));
@@ -378,7 +378,7 @@ list<JsonVariant *> AMQPUnwrapper::unwrapList(TLVAMQP *tlv)
     return result;
 }
 
-map<JsonVariant *, JsonVariant *> AMQPUnwrapper::unwrapMap(TLVAMQP *tlv)
+std::map<JsonVariant *, JsonVariant *> AMQPUnwrapper::unwrapMap(TLVAMQP *tlv)
 {
     if (tlv->getTypeValue() != AMQP_MAP8_TYPE &&
             tlv->getTypeValue() != AMQP_MAP32_TYPE) {
@@ -386,7 +386,7 @@ map<JsonVariant *, JsonVariant *> AMQPUnwrapper::unwrapMap(TLVAMQP *tlv)
         return map<JsonVariant *, JsonVariant *>();
     }
 
-    map<JsonVariant *, JsonVariant *> result;
+    std::map<JsonVariant *, JsonVariant *> result;
     AMQPTLVMap *mapTlv = (AMQPTLVMap *)tlv ;
 
     for (std::map<JsonVariant *, JsonVariant *>::iterator it = mapTlv.begin(); it != mapTlv.end(); ++it) {
@@ -398,9 +398,9 @@ map<JsonVariant *, JsonVariant *> AMQPUnwrapper::unwrapMap(TLVAMQP *tlv)
     return result;
 }
 
-list<JsonVariant *> AMQPUnwrapper::unwrapArray(TLVAMQP *tlv)
+std::list<JsonVariant *> AMQPUnwrapper::unwrapArray(TLVAMQP *tlv)
 {
-    list<JsonVariant *> result;
+    std::list<JsonVariant *> result;
     if (tlv->getTypeValue() != AMQP_ARRAY8_TYPE &&
             tlv->getTypeValue() != AMQP_ARRAY32_TYPE) {
         printf("AMQPUnwrapper::unwrapArray");

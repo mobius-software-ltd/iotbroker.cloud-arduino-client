@@ -24,6 +24,8 @@
 #include "iot-protocols/amqp/classes/enums/amqperrorcode.h"
 #include "iot-protocols/amqp/classes/wrappers/amqpsymbol.h"
 #include "iot-protocols/amqp/classes/tlv/compound/amqptlvlist.h"
+#include <ArduinoJson.h>
+#include <StandardCplusplus.h>
 #include <map>
 #include <cstring>
 #include <cstdlib>
@@ -35,7 +37,7 @@ private:
 
     AMQPErrorCode *condition;
     String descriptionString;
-    map<JsonVariant *, JsonVariant *> info;
+    std::map<JsonVariant *, JsonVariant *> info;
 
 public:
     AMQPError();
@@ -50,7 +52,7 @@ public:
     String getDescriptionString() const;
     void setDescriptionString(const String &value);
 
-    map<JsonVariant *, JsonVariant *> getInfo() const;
+    std::map<JsonVariant *, JsonVariant *> getInfo() const;
 };
 
 #endif // AMQPERROR_H

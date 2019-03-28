@@ -28,8 +28,11 @@
 #include "iot-protocols/amqp/classes/tlv/compound/amqptlvlist.h"
 #include "iot-protocols/amqp/classes/tlv/compound/amqptlvmap.h"
 
-#include <chrono>
+//#include <chrono>
 #include <ctime>
+#include <StandardCplusplus.h>
+#include <map>
+#include <list>
 
 class AMQPUnwrapper
 {
@@ -54,10 +57,10 @@ public:
     static String unwrapString(TLVAMQP *tlv);
     static AMQPSymbol *unwrapSymbol(TLVAMQP *tlv);
     static unsigned char * unwrapBinary(TLVAMQP *tlv);
-    static QUuid unwrapUUID(TLVAMQP *tlv);
-    static list<JsonVariant *> unwrapList(TLVAMQP *tlv);
-    static map<JsonVariant *, JsonVariant *> unwrapMap(TLVAMQP *tlv);
-    static list<JsonVariant *> unwrapArray(TLVAMQP *tlv);
+    static String unwrapUUID(TLVAMQP *tlv);
+    static std::list<JsonVariant *> unwrapList(TLVAMQP *tlv);
+    static std::map<JsonVariant *, JsonVariant *> unwrapMap(TLVAMQP *tlv);
+    static std::list<JsonVariant *> unwrapArray(TLVAMQP *tlv);
 };
 
 #endif // AMQPUNWRAPPER_H

@@ -21,6 +21,8 @@
 #ifndef AMQPTRANSFER_H
 #define AMQPTRANSFER_H
 
+#include <ArduinoJson.h>
+#include <StandardCplusplus.h>
 #include <map>
 #include <list>
 #include "iot-protocols/amqp/classes/headerapi/amqpheader.h"
@@ -44,7 +46,7 @@ private:
     JsonVariant *resume;
     JsonVariant *aborted;
     JsonVariant *batchable;
-    map<AMQPSectionCode *, AMQPSection *> sections;
+    std::map<AMQPSectionCode *, AMQPSection *> sections;
 public:
     AMQPTransfer();
 
@@ -64,7 +66,7 @@ public:
     AMQPSection *getValue();
     AMQPSection *getFooter();
 
-    void addSections(list<AMQPSection *> array);
+    void addSections(std::list<AMQPSection *> array);
 
     JsonVariant *getHandle() const;
     void setHandle(JsonVariant *value);
@@ -99,8 +101,8 @@ public:
     JsonVariant *getBatchable() const;
     void setBatchable(JsonVariant *value);
 
-    map<AMQPSectionCode *, AMQPSection *> getSections() const;
-    void setSections(const map<AMQPSectionCode *, AMQPSection *> &value);
+    std::map<AMQPSectionCode *, AMQPSection *> getSections() const;
+    void setSections(const std::map<AMQPSectionCode *, AMQPSection *> &value);
 };
 
 #endif // AMQPTRANSFER_H

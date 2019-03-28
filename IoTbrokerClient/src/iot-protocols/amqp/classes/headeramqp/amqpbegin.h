@@ -21,6 +21,8 @@
 #ifndef AMQPBEGIN_H
 #define AMQPBEGIN_H
 
+#include <ArduinoJson.h>
+#include <StandardCplusplus.h>
 #include <map>
 #include <list>
 #include "iot-protocols/amqp/classes/headerapi/amqpheader.h"
@@ -35,9 +37,9 @@ private:
     JsonVariant *incomingWindow;
     JsonVariant *outgoingWindow;
     JsonVariant *handleMax;
-    list<JsonVariant *> offeredCapabilities;
-    list<JsonVariant *> desiredCapabilities;
-    map<JsonVariant *, JsonVariant *> properties;
+    std::list<JsonVariant *> offeredCapabilities;
+    std::list<JsonVariant *> desiredCapabilities;
+    std::map<JsonVariant *, JsonVariant *> properties;
 
 public:
     AMQPBegin();
@@ -48,8 +50,8 @@ public:
     virtual AMQPTLVList *arguments();
     virtual void fillArguments(AMQPTLVList *list);
 
-    void addOfferedCapability(list<String> list);
-    void addDesiredCapability(list<String> list);
+    void addOfferedCapability(std::list<String> list);
+    void addDesiredCapability(std::list<String> list);
     void addProperty(String key, JsonVariant *value);
 
     JsonVariant *getRemoteChannel() const;
@@ -67,14 +69,14 @@ public:
     JsonVariant *getHandleMax() const;
     void setHandleMax(JsonVariant *value);
 
-    list<JsonVariant *> getOfferedCapabilities() const;
-    void setOfferedCapabilities(const list<JsonVariant *> &value);
+    std::list<JsonVariant *> getOfferedCapabilities() const;
+    void setOfferedCapabilities(const std::list<JsonVariant *> &value);
 
-    list<JsonVariant *> getDesiredCapabilities() const;
-    void setDesiredCapabilities(const list<JsonVariant *> &value);
+    std::list<JsonVariant *> getDesiredCapabilities() const;
+    void setDesiredCapabilities(const std::list<JsonVariant *> &value);
 
-    map<JsonVariant *, JsonVariant *> getProperties() const;
-    void setProperties(const map<JsonVariant *, JsonVariant *> &value);
+    std::map<JsonVariant *, JsonVariant *> getProperties() const;
+    void setProperties(const std::map<JsonVariant *, JsonVariant *> &value);
 };
 
 #endif // AMQPBEGIN_H

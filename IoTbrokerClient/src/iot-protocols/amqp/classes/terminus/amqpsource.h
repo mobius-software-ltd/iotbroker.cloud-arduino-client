@@ -21,6 +21,7 @@
 #ifndef AMQPSOURCE_H
 #define AMQPSOURCE_H
 
+#include <StandardCplusplus.h>
 #include <map>
 #include <list>
 #include <cstdlib>
@@ -39,12 +40,12 @@ private:
     AMQPTerminusExpiryPolicy *expiryPeriod;
     JsonVariant *timeout;
     JsonVariant *dynamic;
-    map<JsonVariant *, JsonVariant *> dynamicNodeProperties;
+    std::map<JsonVariant *, JsonVariant *> dynamicNodeProperties;
     AMQPDistributionMode *distributionMode;
-    map<JsonVariant *, JsonVariant *> filter;
+    std::map<JsonVariant *, JsonVariant *> filter;
     AMQPOutcome *defaultOutcome;
-    list<JsonVariant *> outcomes;
-    list<JsonVariant *> capabilities;
+    std::list<JsonVariant *> outcomes;
+    std::list<JsonVariant *> capabilities;
 
 public:
     AMQPSource();
@@ -54,8 +55,8 @@ public:
 
     void addDynamicNodeProperties(String key, JsonVariant *value);
     void addFilter(String key, JsonVariant *value);
-    void addOutcomes(list<String> array);
-    void addCapabilities(list<String> array);
+    void addOutcomes(std::list<String> array);
+    void addCapabilities(std::list<String> array);
 
     String getAddress() const;
     void setAddress(const String &value);
@@ -67,18 +68,18 @@ public:
     void setTimeout(JsonVariant *value);
     JsonVariant *getDynamic() const;
     void setDynamic(JsonVariant *value);
-    map<JsonVariant *, JsonVariant *> getDynamicNodeProperties() const;
-    void setDynamicNodeProperties(const map<JsonVariant *, JsonVariant *> &value);
+    std::map<JsonVariant *, JsonVariant *> getDynamicNodeProperties() const;
+    void setDynamicNodeProperties(const std::map<JsonVariant *, JsonVariant *> &value);
     AMQPDistributionMode *getDistributionMode() const;
     void setDistributionMode(AMQPDistributionMode *value);
-    map<JsonVariant *, JsonVariant *> getFilter() const;
-    void setFilter(const map<JsonVariant *, JsonVariant *> &value);
+    std::map<JsonVariant *, JsonVariant *> getFilter() const;
+    void setFilter(const std::map<JsonVariant *, JsonVariant *> &value);
     AMQPOutcome *getDefaultOutcome() const;
     void setDefaultOutcome(AMQPOutcome *value);
-    list<JsonVariant *> getOutcomes() const;
-    void setOutcomes(const list<JsonVariant *> &value);
-    list<JsonVariant *> getCapabilities() const;
-    void setCapabilities(const list<JsonVariant *> &value);
+    std::list<JsonVariant *> getOutcomes() const;
+    void setOutcomes(const std::list<JsonVariant *> &value);
+    std::list<JsonVariant *> getCapabilities() const;
+    void setCapabilities(const std::list<JsonVariant *> &value);
 };
 
 #endif // AMQPSOURCE_H

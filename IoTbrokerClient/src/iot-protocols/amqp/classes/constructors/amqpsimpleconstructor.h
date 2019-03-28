@@ -35,9 +35,9 @@ public:
     AMQPType *getType() const;
     void setType(AMQPType *value);
 
-    virtual unsigned char * getData() const;
-    virtual int getLength() const;
-    virtual int getDescriptorCode() const;
+    virtual unsigned char *getData();
+    virtual int getLength();
+    virtual int getDescriptorCode();
 };
 
 #endif // AMQPSIMPLECONSTRUCTOR_H

@@ -53,245 +53,206 @@ void AMQPSimpleType::setObject(JsonVariant *value)
 
 bool AMQPSimpleType::variantToBool(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<bool>();
+    return value->as<bool>();
 }
 
 JsonVariant *AMQPSimpleType::boolToVariant(bool value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_BOOLEAN_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
-short AMQPSimpleType::variantToUByte(JsonVariant *value)
+unsigned short AMQPSimpleType::variantToUByte(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<short>();
+    return value->as<unsigned short>();
 }
 
 JsonVariant *AMQPSimpleType::UByteToVariant(short value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_UBYTE_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 unsigned short AMQPSimpleType::variantToUShort(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<unsigned short>();
+    return value->as<unsigned short>();
 }
 
 JsonVariant *AMQPSimpleType::UShortToVariant(unsigned short value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_USHORT_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 unsigned int AMQPSimpleType::variantToUInt(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<unsigned int>();
+    return value->as<unsigned int>();
 }
 
 JsonVariant *AMQPSimpleType::UIntToVariant(unsigned int value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_UINT0_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 unsigned long AMQPSimpleType::variantToULong(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<unsigned long>();
+    return value->as<unsigned long>();
 }
 
 JsonVariant *AMQPSimpleType::ULongToVariant(unsigned long value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_ULONG_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 char AMQPSimpleType::variantToChar(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<char>();
+    return value->as<char>();
 }
 
 JsonVariant *AMQPSimpleType::charToVariant(char value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_CHAR_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 short AMQPSimpleType::variantToShort(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<short>();
+    return value->as<short>();
 }
 
 JsonVariant *AMQPSimpleType::shortToVariant(short value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_SHORT_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 int AMQPSimpleType::variantToInt(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<int>();
+    return value->as<int>();
 }
 
 JsonVariant *AMQPSimpleType::intToVariant(int value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_INT_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 long AMQPSimpleType::variantToLong(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<long>();
+    return value->as<long>();
 }
 
 JsonVariant *AMQPSimpleType::longToVariant(long value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_LONG_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 float AMQPSimpleType::variantToFloat(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<float>();
+    return value->as<float>();
 }
 
 JsonVariant *AMQPSimpleType::floatToVariant(float value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_FLOAT_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 double AMQPSimpleType::variantToDouble(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<double>();
+    return value->as<double>();
 }
 
 JsonVariant *AMQPSimpleType::doubleToVariant(double value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_DOUBLE_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 time_t AMQPSimpleType::variantToTimestamp(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<time_t>();
+    return value->as<time_t>();
 }
 
 JsonVariant *AMQPSimpleType::timestampToVariant(time_t value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_TIMESTAMP_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 String AMQPSimpleType::variantToUuid(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<String>();
+    return value->as<String>();
 }
 
 JsonVariant *AMQPSimpleType::uuidToVariant(String value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_UUID_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
-unsigned char * AMQPSimpleType::variantToBinary(JsonVariant *value)
+const char * AMQPSimpleType::variantToBinary(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<unsigned char *>();
+    return value->as<const char *>();
 }
 
-JsonVariant *AMQPSimpleType::binaryToVariant(unsigned char * value)
+JsonVariant *AMQPSimpleType::binaryToVariant(char * value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_BINARY8_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 String AMQPSimpleType::variantToString(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    return type->getObject()->as<String>();
+    return value->as<String>();
 }
 
 JsonVariant *AMQPSimpleType::stringToVariant(String value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_STRING8_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 AMQPSymbol *AMQPSimpleType::variantToSymbol(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    if (type->getType() == AMQP_SYMBOL8_TYPE || type->getType() == AMQP_SYMBOL32_TYPE) {
-        String value = type->getObject()->as<String>();
-        return new AMQPSymbol(value);
-    }
-    return new AMQPSymbol();
+    String get = value->as<String>();
+    return new AMQPSymbol(get);
 }
 
 JsonVariant *AMQPSimpleType::symbolToVariant(AMQPSymbol *value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_SYMBOL8_TYPE);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
+    return valueVariant;
 }
 
 AMQPDecimal *AMQPSimpleType::variantToDecimal(JsonVariant *value)
 {
-    AMQPSimpleType *type = simpleTypeFromVariant(value);
-    if (type->getType() == AMQP_DECIMAL32_TYPE || type->getType() == AMQP_DECIMAL64_TYPE || type->getType() == AMQP_DECIMAL128_TYPE) {
-        short value = type->getObject()->as<short>();
-        return new AMQPDecimal(value);
-    }
-    return new AMQPDecimal();
+    short get = value->as<short>();
+    return new AMQPDecimal(get);
 }
 
 JsonVariant *AMQPSimpleType::decimalToVariant(AMQPDecimal *value)
 {
-    JsonVariant valueVariant;
-    valueVariant.set(value);
-    return wrapSimpleTypeValue(valueVariant, AMQP_DECIMAL32_TYPE);
-}
-
-// private methods
-
-AMQPSimpleType *AMQPSimpleType::simpleTypeFromVariant(JsonVariant *value)
-{
-    AMQPSimpleType *type = value.as<AMQPSimpleType>();
-    return type;
-}
-
-JsonVariant *AMQPSimpleType::wrapSimpleTypeValue(JsonVariant *value, AMQPTypes type)
-{
-    AMQPSimpleType *sType = new AMQPSimpleType(type, value);
-    JsonVariant valueVariant;
-    valueVariant.set(value);
+    JsonVariant *valueVariant;
+    valueVariant->set(value);
     return valueVariant;
 }

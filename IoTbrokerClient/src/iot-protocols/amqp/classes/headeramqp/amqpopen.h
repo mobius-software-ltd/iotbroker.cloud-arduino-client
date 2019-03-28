@@ -21,6 +21,8 @@
 #ifndef AMQPOPEN_H
 #define AMQPOPEN_H
 
+#include <ArduinoJson.h>
+#include <StandardCplusplus.h>
 #include <map>
 #include <list>
 #include "iot-protocols/amqp/classes/headerapi/amqpheader.h"
@@ -34,11 +36,11 @@ private:
     JsonVariant *maxFrameSize;
     JsonVariant *channelMax;
     JsonVariant *idleTimeout;
-    list<JsonVariant *> outgoingLocales;
-    list<JsonVariant *> incomingLocales;
-    list<JsonVariant *> offeredCapabilities;
-    list<JsonVariant *> desiredCapabilities;
-    map<JsonVariant *, JsonVariant *> properties;
+    std::list<JsonVariant *> outgoingLocales;
+    std::list<JsonVariant *> incomingLocales;
+    std::list<JsonVariant *> offeredCapabilities;
+    std::list<JsonVariant *> desiredCapabilities;
+    std::map<JsonVariant *, JsonVariant *> properties;
 
 public:
     AMQPOpen();
@@ -49,10 +51,10 @@ public:
     virtual AMQPTLVList *arguments();
     virtual void fillArguments(AMQPTLVList *list);
 
-    void addOutgoingLocale(list<String> array);
-    void addIncomingLocale(list<String> array);
-    void addOfferedCapability(list<String> array);
-    void addDesiredCapability(list<String> array);
+    void addOutgoingLocale(std::list<String> array);
+    void addIncomingLocale(std::list<String> array);
+    void addOfferedCapability(std::list<String> array);
+    void addDesiredCapability(std::list<String> array);
     void addProperty(String key, JsonVariant *value);
 
     String getContainerId() const;
@@ -70,20 +72,20 @@ public:
     JsonVariant *getIdleTimeout() const;
     void setIdleTimeout(JsonVariant *value);
 
-    list<JsonVariant *> getOutgoingLocales() const;
-    void setOutgoingLocales(const list<JsonVariant *> &value);
+    std::list<JsonVariant *> getOutgoingLocales() const;
+    void setOutgoingLocales(const std::list<JsonVariant *> &value);
 
-    list<JsonVariant *> getIncomingLocales() const;
-    void setIncomingLocales(const list<JsonVariant *> &value);
+    std::list<JsonVariant *> getIncomingLocales() const;
+    void setIncomingLocales(const std::list<JsonVariant *> &value);
 
-    list<JsonVariant *> getOfferedCapabilities() const;
-    void setOfferedCapabilities(const list<JsonVariant *> &value);
+    std::list<JsonVariant *> getOfferedCapabilities() const;
+    void setOfferedCapabilities(const std::list<JsonVariant *> &value);
 
-    list<JsonVariant *> getDesiredCapabilities() const;
-    void setDesiredCapabilities(const list<JsonVariant *> &value);
+    std::list<JsonVariant *> getDesiredCapabilities() const;
+    void setDesiredCapabilities(const std::list<JsonVariant *> &value);
 
-    map<JsonVariant *, JsonVariant *> getProperties() const;
-    void setProperties(const map<JsonVariant *, JsonVariant *> &value);
+    std::map<JsonVariant *, JsonVariant *> getProperties() const;
+    void setProperties(const std::map<JsonVariant *, JsonVariant *> &value);
 };
 
 #endif // AMQPOPEN_H

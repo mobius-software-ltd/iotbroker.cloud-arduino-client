@@ -35,19 +35,19 @@ void AMQPSimpleConstructor::setType(AMQPType *value)
     this->type = value;
 }
 
-unsigned char * AMQPSimpleConstructor::getData() const
+unsigned char *AMQPSimpleConstructor::getData()
 {
-    unsigned char * data = malloc(sizeof(char));
-    data[0] = type->getValue();
+    unsigned char *data = (unsigned char*) malloc(sizeof(unsigned char));
+    data[0] = this->type->getValue();
     return data;
 }
 
-int AMQPSimpleConstructor::getLength() const
+int AMQPSimpleConstructor::getLength()
 {
     return 1;
 }
 
-int AMQPSimpleConstructor::getDescriptorCode() const
+int AMQPSimpleConstructor::getDescriptorCode()
 {
     return 0;
 }

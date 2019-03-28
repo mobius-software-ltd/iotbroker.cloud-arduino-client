@@ -211,22 +211,22 @@ void AMQPTarget::setDynamic(JsonVariant *value)
     dynamic = value;
 }
 
-map<JsonVariant *, JsonVariant *> AMQPTarget::getDynamicNodeProperties() const
+std::map<JsonVariant *, JsonVariant *> AMQPTarget::getDynamicNodeProperties() const
 {
     return dynamicNodeProperties;
 }
 
-void AMQPTarget::setDynamicNodeProperties(const map<JsonVariant *, JsonVariant *> &value)
+void AMQPTarget::setDynamicNodeProperties(const std::map<JsonVariant *, JsonVariant *> &value)
 {
     dynamicNodeProperties = value;
 }
 
-list<JsonVariant *> AMQPTarget::getCapabilities() const
+std::list<JsonVariant *> AMQPTarget::getCapabilities() const
 {
     return capabilities;
 }
 
-void AMQPTarget::setCapabilities(const list<JsonVariant *> &value)
+void AMQPTarget::setCapabilities(const std::list<JsonVariant *> &value)
 {
     capabilities = value;
 }

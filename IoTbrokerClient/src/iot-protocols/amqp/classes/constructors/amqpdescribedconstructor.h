@@ -37,9 +37,9 @@ private:
 public:
     AMQPDescribedConstructor(AMQPType *type, TLVAMQP *descriptor);
 
-    virtual unsigned char * getData() const;
-    virtual int getLength() const;
-    virtual int getDescriptorCode() const;
+    unsigned char *getData();
+    int getLength();
+    int getDescriptorCode();
 };
 
 #endif // AMQPDESCRIBEDCONSTRUCTOR_H

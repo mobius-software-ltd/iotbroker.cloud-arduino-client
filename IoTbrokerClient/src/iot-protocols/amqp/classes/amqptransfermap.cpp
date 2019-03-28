@@ -24,7 +24,7 @@
 AMQPTransferMap::AMQPTransferMap()
 {
     this->index = 0;
-    this->transfers = map<int, AMQPTransfer *>();
+    this->transfers = std::map<int, AMQPTransfer *>();
 }
 
 AMQPTransfer *AMQPTransferMap::addTransfer(AMQPTransfer *item)
@@ -49,7 +49,7 @@ AMQPTransfer *AMQPTransferMap::removeTransferByDeliveryId(int Id)
     return item;
 }
 
-map<int, AMQPTransfer *> AMQPTransferMap::getTransfers() const
+std::map<int, AMQPTransfer *> AMQPTransferMap::getTransfers() const
 {
     return transfers;
 }

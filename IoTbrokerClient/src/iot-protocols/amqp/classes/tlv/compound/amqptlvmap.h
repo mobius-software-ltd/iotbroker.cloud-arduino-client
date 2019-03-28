@@ -21,6 +21,8 @@
 #ifndef AMQPTLVMAP_H
 #define AMQPTLVMAP_H
 
+#include <StandardCplusplus.h>
+#include <map>
 #include "iot-protocols/amqp/classes/tlv/api/tlvamqp.h"
 #include <cstring>
 #include <cstdlib>
@@ -33,13 +35,13 @@ private:
     int size;
     int count;
 
-    map<TLVAMQP *, TLVAMQP *> map;
+    std::map<TLVAMQP *, TLVAMQP *> map;
 
     void update();
 
 public:
     AMQPTLVMap();
-    AMQPTLVMap(AMQPType *type, map<TLVAMQP *, TLVAMQP *> map);
+    AMQPTLVMap(AMQPType *type, std::map<TLVAMQP *, TLVAMQP *> map);
 
     virtual unsigned char * getData();
     virtual int getLength();
@@ -52,7 +54,7 @@ public:
     int getWidth() const;
     int getSize() const;
     int getCount() const;
-    map<TLVAMQP *, TLVAMQP *> getMap() const;
+    std::map<TLVAMQP *, TLVAMQP *> getMap() const;
 };
 
 #endif // AMQPTLVMAP_H

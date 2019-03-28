@@ -21,6 +21,7 @@
 #ifndef AMQPHEADERCODE_H
 #define AMQPHEADERCODE_H
 
+#include <StandardCplusplus.h>
 #include <map>
 #include "iot-protocols/amqp/classes/enums/enumobject.h"
 
@@ -44,22 +45,22 @@ enum AMQPHeaderCodes
     AMQP_PING_HEADER_CODE           = 0x00,
 };
 
-static String const AMQP_PROTOCOL_HEADER_CODE_STRING       = "Protocol header";
-static String const AMQP_OPEN_HEADER_CODE_STRING           = "Open";
-static String const AMQP_BEGIN_HEADER_CODE_STRING          = "Begin";
-static String const AMQP_ATTACH_HEADER_CODE_STRING         = "Attach";
-static String const AMQP_FLOW_HEADER_CODE_STRING           = "Flow";
-static String const AMQP_TRANSFER_HEADER_CODE_STRING       = "Transfer";
-static String const AMQP_DISPOSITION_HEADER_CODE_STRING    = "Disposition";
-static String const AMQP_DETACH_HEADER_CODE_STRING         = "Detach";
-static String const AMQP_END_HEADER_CODE_STRING            = "End";
-static String const AMQP_CLOSE_HEADER_CODE_STRING          = "Close";
-static String const AMQP_MECHANISMS_HEADER_CODE_STRING     = "Mechanisms";
-static String const AMQP_INIT_HEADER_CODE_STRING           = "Init";
-static String const AMQP_CHALLENGE_HEADER_CODE_STRING      = "Challenge";
-static String const AMQP_RESPONSE_HEADER_CODE_STRING       = "Response";
-static String const AMQP_OUTCOME_HEADER_CODE_STRING        = "Outcome";
-static String const AMQP_PING_HEADER_CODE_STRING           = "Ping";
+static String const AMQP_PROTOCOL_HEADER_CODE_String       = "Protocol header";
+static String const AMQP_OPEN_HEADER_CODE_String           = "Open";
+static String const AMQP_BEGIN_HEADER_CODE_String         = "Begin";
+static String const AMQP_ATTACH_HEADER_CODE_String         = "Attach";
+static String const AMQP_FLOW_HEADER_CODE_String           = "Flow";
+static String const AMQP_TRANSFER_HEADER_CODE_String       = "Transfer";
+static String const AMQP_DISPOSITION_HEADER_CODE_String    = "Disposition";
+static String const AMQP_DETACH_HEADER_CODE_String         = "Detach";
+static String const AMQP_END_HEADER_CODE_String           = "End";
+static String const AMQP_CLOSE_HEADER_CODE_String          = "Close";
+static String const AMQP_MECHANISMS_HEADER_CODE_String     = "Mechanisms";
+static String const AMQP_INIT_HEADER_CODE_String           = "Init";
+static String const AMQP_CHALLENGE_HEADER_CODE_String      = "Challenge";
+static String const AMQP_RESPONSE_HEADER_CODE_String       = "Response";
+static String const AMQP_OUTCOME_HEADER_CODE_String        = "Outcome";
+static String const AMQP_PING_HEADER_CODE_String           = "Ping";
 
 class AMQPHeaderCode : public EnumObject
 {

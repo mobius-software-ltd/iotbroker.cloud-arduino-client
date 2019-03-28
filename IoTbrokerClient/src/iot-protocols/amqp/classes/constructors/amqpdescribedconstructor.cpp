@@ -25,28 +25,28 @@ AMQPDescribedConstructor::AMQPDescribedConstructor(AMQPType *type, TLVAMQP *desc
     this->descriptor = descriptor;
 }
 
-unsigned char * AMQPDescribedConstructor::getData() const
+unsigned char *AMQPDescribedConstructor::getData()
 {
-    unsigned char * data = malloc(sizeof(char) * (sizeof(this->descriptor->getData())+2));
+    unsigned char *data = (unsigned char*) malloc(sizeof(unsigned char) * (sizeof(this->descriptor->getData())+2));
     int i = 0;
 
     data[i++] = 0;
-    int string_length = strlen(this->descriptor->getData());
+    int string_length = sizeof(this->descriptor->getData());
     memcpy(&data[i], this->descriptor->getData(), string_length);
     i+=string_length;
     data[i] = this->type->getValue();
     return data;
 }
 
-int AMQPDescribedConstructor::getLength() const
+int AMQPDescribedConstructor::getLength()
 {
     return sizeof(this->descriptor->getData()) + 2;
 }
 
-int AMQPDescribedConstructor::getDescriptorCode() const
+int AMQPDescribedConstructor::getDescriptorCode()
 {
-    unsigned char * data = malloc(sizeof(char) * sizeof(this->descriptor->getData()));
-    string_length = strlen(this->descriptor->getData());
+    unsigned char * data = (unsigned char*) malloc(sizeof(unsigned char) * sizeof(this->descriptor->getData()));
+    int string_length = sizeof(this->descriptor->getData());
     memcpy(&data[0], this->descriptor->getData(), string_length);
     return data[1];
 }

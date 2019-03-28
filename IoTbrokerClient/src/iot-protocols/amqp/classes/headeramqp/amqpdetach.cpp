@@ -62,7 +62,7 @@ AMQPTLVList *AMQPDetach::arguments()
         list->addElementWithIndex(2, this->error->getList());
     }
 
-    unsigned char * data = malloc(sizeof(char));
+    unsigned char * data = (unsigned char *) malloc(sizeof(unsigned char *));
     data[0] = this->code->getValue();
     AMQPType *type = new AMQPType(AMQP_SMALL_ULONG_TYPE);
     AMQPTLVFixed *fixed = new AMQPTLVFixed(type, data);
@@ -76,7 +76,7 @@ AMQPTLVList *AMQPDetach::arguments()
 
 void AMQPDetach::fillArguments(AMQPTLVList *list)
 {
-    int size = list->getList().count();
+    int size = list->getList().size();
 
     if (size == 0) {
         printf("AMQPDetach::fillArguments::size == 0");

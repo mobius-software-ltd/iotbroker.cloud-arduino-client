@@ -31,12 +31,13 @@
 #include "iot-protocols/amqp/classes/tlv/variable/amqptlvvariable.h"
 #include "iot-protocols/amqp/classes/tlv/fixed/amqptlvfixed.h"
 #include "iot-protocols/amqp/classes/tlv/fixed/amqptlvnull.h"
-#include <chrono>
+//#include <chrono>
 #include <ctime>
+#include <StandardCplusplus.h>
 #include <list>
 #include <map>
 #include "utils/helpers.h"
-#include <sstream>
+//#include <sstream>
 
 class AMQPWrapper
 {
@@ -73,9 +74,9 @@ public:
 
     static AMQPTLVVariable *wrapString(String value);
     static AMQPTLVVariable *wrapSymbol(AMQPSymbol *value);
-    static AMQPTLVList *wrapList(list<JsonVariant *> value);
-    static AMQPTLVMap *wrapMap(map<JsonVariant *, JsonVariant *> value);
-    static AMQPTLVArray *wrapArray(list<JsonVariant *> value);
+    static AMQPTLVList *wrapList(std::list<JsonVariant *> value);
+    static AMQPTLVMap *wrapMap(std::map<JsonVariant *, JsonVariant *> value);
+    static AMQPTLVArray *wrapArray(std::list<JsonVariant *> value);
 };
 
 #endif // AMQPWRAPPER_H

@@ -22,19 +22,19 @@
 
 AMQPTLVMap::AMQPTLVMap() : TLVAMQP(new AMQPSimpleConstructor(new AMQPType(AMQP_MAP8_TYPE)))
 {
-    this->map = map<TLVAMQP *, TLVAMQP *>();
+    this->map = std::map<TLVAMQP *, TLVAMQP *>();
     this->width = 1;
     this->size = 1;
     this->count = 0;
 }
 
-AMQPTLVMap::AMQPTLVMap(AMQPType *type, map<TLVAMQP *, TLVAMQP *> map) : TLVAMQP(new AMQPSimpleConstructor(type))
+AMQPTLVMap::AMQPTLVMap(AMQPType *type, std::map<TLVAMQP *, TLVAMQP *> map) : TLVAMQP(new AMQPSimpleConstructor(type))
 {
     this->map = map;
     this->width = (type->getValue() == AMQP_MAP8_TYPE) ? 1 : 4;
     this->size += this->width;
 
-    for(map<TLVAMQP *, TLVAMQP *>::iterator it = map.begin(); it != map.end(); ++it) {
+    for(std::map<TLVAMQP *, TLVAMQP *>::iterator it = this->map->begin(); it != this->map->end(); ++it) {
         this->size += it->first->getLength();
         this->size += it->second->getLength();
     }
@@ -53,7 +53,7 @@ String AMQPTLVMap::description()
 {
     String result;
 
-    for(map<TLVAMQP *, TLVAMQP *>::iterator it = this.map.begin(); it != this.map.end(); ++it) {
+    for(std::map<TLVAMQP *, TLVAMQP *>::iterator it = this.map.begin(); it != this.map.end(); ++it) {
         result.append(it->first->description());
         result.append(" : ");
         result.append(it->second->description());
@@ -84,7 +84,7 @@ unsigned char * AMQPTLVMap::getData()
     }
 
     unsigned char * valueData;
-    for(map<TLVAMQP *, TLVAMQP *>::iterator it = this.map.begin(); it != this.map.end(); ++it) {
+    for(std::map<TLVAMQP *, TLVAMQP *>::iterator it = this.map.begin(); it != this.map.end(); ++it) {
         TLVAMQP *value = it.second;
         valueData.writeRawData(it.first->getData());
         valueData.writeRawData(value->getData());
@@ -136,7 +136,7 @@ int AMQPTLVMap::getCount() const
     return count;
 }
 
-map<TLVAMQP *, TLVAMQP *> AMQPTLVMap::getMap() const
+std::map<TLVAMQP *, TLVAMQP *> AMQPTLVMap::getMap() const
 {
     return map;
 }

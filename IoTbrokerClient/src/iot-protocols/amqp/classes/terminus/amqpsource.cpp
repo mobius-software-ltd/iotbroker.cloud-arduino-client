@@ -279,12 +279,12 @@ void AMQPSource::setDynamic(JsonVariant *value)
     dynamic = value;
 }
 
-map<JsonVariant *, JsonVariant *> AMQPSource::getDynamicNodeProperties() const
+std::map<JsonVariant *, JsonVariant *> AMQPSource::getDynamicNodeProperties() const
 {
     return dynamicNodeProperties;
 }
 
-void AMQPSource::setDynamicNodeProperties(const map<JsonVariant *, JsonVariant *> &value)
+void AMQPSource::setDynamicNodeProperties(const std::map<JsonVariant *, JsonVariant *> &value)
 {
     dynamicNodeProperties = value;
 }
@@ -299,12 +299,12 @@ void AMQPSource::setDistributionMode(AMQPDistributionMode *value)
     distributionMode = value;
 }
 
-map<JsonVariant *, JsonVariant *> AMQPSource::getFilter() const
+std::map<JsonVariant *, JsonVariant *> AMQPSource::getFilter() const
 {
     return filter;
 }
 
-void AMQPSource::setFilter(const map<JsonVariant *, JsonVariant *> &value)
+void AMQPSource::setFilter(const std::map<JsonVariant *, JsonVariant *> &value)
 {
     filter = value;
 }
@@ -319,22 +319,22 @@ void AMQPSource::setDefaultOutcome(AMQPOutcome *value)
     defaultOutcome = value;
 }
 
-list<JsonVariant *> AMQPSource::getOutcomes() const
+std::list<JsonVariant *> AMQPSource::getOutcomes() const
 {
     return outcomes;
 }
 
-void AMQPSource::setOutcomes(const list<JsonVariant *> &value)
+void AMQPSource::setOutcomes(const std::list<JsonVariant *> &value)
 {
     outcomes = value;
 }
 
-list<JsonVariant *> AMQPSource::getCapabilities() const
+std::list<JsonVariant *> AMQPSource::getCapabilities() const
 {
     return capabilities;
 }
 
-void AMQPSource::setCapabilities(const list<JsonVariant *> &value)
+void AMQPSource::setCapabilities(const std::list<JsonVariant *> &value)
 {
     capabilities = value;
 }

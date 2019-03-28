@@ -350,12 +350,12 @@ void AMQPAttach::setTarget(AMQPTarget *value)
     target = value;
 }
 
-map<JsonVariant *, JsonVariant *> AMQPAttach::getUnsettled() const
+std::map<JsonVariant *, JsonVariant *> AMQPAttach::getUnsettled() const
 {
     return unsettled;
 }
 
-void AMQPAttach::setUnsettled(const map<JsonVariant *, JsonVariant *> &value)
+void AMQPAttach::setUnsettled(const std::map<JsonVariant *, JsonVariant *> &value)
 {
     unsettled = value;
 }
@@ -390,32 +390,32 @@ void AMQPAttach::setMaxMessageSize(JsonVariant *value)
     maxMessageSize = value;
 }
 
-list<JsonVariant *> AMQPAttach::getOfferedCapabilities() const
+std::list<JsonVariant *> AMQPAttach::getOfferedCapabilities() const
 {
     return offeredCapabilities;
 }
 
-void AMQPAttach::setOfferedCapabilities(const list<JsonVariant *> &value)
+void AMQPAttach::setOfferedCapabilities(const std::list<JsonVariant *> &value)
 {
     offeredCapabilities = value;
 }
 
-list<JsonVariant *> AMQPAttach::getDesiredCapabilities() const
+std::list<JsonVariant *> AMQPAttach::getDesiredCapabilities() const
 {
     return desiredCapabilities;
 }
 
-void AMQPAttach::setDesiredCapabilities(const list<JsonVariant *> &value)
+void AMQPAttach::setDesiredCapabilities(const std::list<JsonVariant *> &value)
 {
     desiredCapabilities = value;
 }
 
-map<JsonVariant *, JsonVariant *> AMQPAttach::getProperties() const
+std::map<JsonVariant *, JsonVariant *> AMQPAttach::getProperties() const
 {
     return properties;
 }
 
-void AMQPAttach::setProperties(const map<JsonVariant *, JsonVariant *> &value)
+void AMQPAttach::setProperties(const std::map<JsonVariant *, JsonVariant *> &value)
 {
     properties = value;
 }

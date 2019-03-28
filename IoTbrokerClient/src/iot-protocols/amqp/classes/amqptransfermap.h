@@ -22,6 +22,7 @@
 #define AMQPTRANSFERMAP_H
 
 #include "iot-protocols/amqp/classes/headeramqp/amqptransfer.h"
+#include <StandardCplusplus.h>
 #include <map>
 
 class AMQPTransferMap
@@ -29,7 +30,7 @@ class AMQPTransferMap
 private:
 
     int index;
-    map<int, AMQPTransfer *> transfers;
+    std::map<int, AMQPTransfer *> transfers;
 
     void newIndex();
 
@@ -39,7 +40,7 @@ public:
     AMQPTransfer *addTransfer(AMQPTransfer *item);
     AMQPTransfer *removeTransferByDeliveryId(int Id);
 
-    map<int, AMQPTransfer *> getTransfers() const;
+    std::map<int, AMQPTransfer *> getTransfers() const;
 };
 
 #endif // AMQPTRANSFERMAP_H

@@ -51,7 +51,7 @@ AMQPTLVList *AMQPEnd::arguments()
         list->addElementWithIndex(0, new AMQPTLVNull());
     }
 
-    unsigned char * data = malloc(sizeof(char));
+    unsigned char *data = (unsigned char *) malloc(sizeof(unsigned char));
     data[0] = this->code->getValue();
     AMQPType *type = new AMQPType(AMQP_SMALL_ULONG_TYPE);
     AMQPTLVFixed *fixed = new AMQPTLVFixed(type, data);
@@ -66,7 +66,7 @@ AMQPTLVList *AMQPEnd::arguments()
 
 void AMQPEnd::fillArguments(AMQPTLVList *list)
 {
-    if (list->getList().count() > 0) {
+    if (list->getList().size() > 0) {
         TLVAMQP *element = list->getList().at(0);
         if (!element->isNull()) {
             if (element->getTypeValue() != AMQP_LIST0_TYPE && element->getTypeValue() != AMQP_LIST8_TYPE && element->getTypeValue() != AMQP_LIST32_TYPE) {

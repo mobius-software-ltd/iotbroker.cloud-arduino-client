@@ -21,7 +21,6 @@
 #ifndef AMQPSIMPLETYPE_H
 #define AMQPSIMPLETYPE_H
 
-//#include <ArduinoSTL.h>
 #include <ArduinoJson.h>
 #include <ctime>
 #include "iot-protocols/amqp/classes/enums/amqptype.h"
@@ -36,7 +35,7 @@ private:
     AMQPTypes type;
     JsonVariant *object;
 
-    static AMQPSimpleType *simpleTypeFromVariant(JsonVariant *value);
+    //static AMQPSimpleType *simpleTypeFromVariant(JsonVariant *value);
     static JsonVariant *wrapSimpleTypeValue(JsonVariant *value, AMQPTypes type);
 
 public:
@@ -52,7 +51,7 @@ public:
     static bool variantToBool(JsonVariant *value);
     static JsonVariant *boolToVariant(bool value);
 
-    static short variantToUByte(JsonVariant *value);
+    static unsigned short variantToUByte(JsonVariant *value);
     static JsonVariant *UByteToVariant(short value);
 
     static unsigned short variantToUShort(JsonVariant *value);
@@ -88,8 +87,8 @@ public:
     static String variantToUuid(JsonVariant *value);
     static JsonVariant *uuidToVariant(String value);
 
-    static unsigned char * variantToBinary(JsonVariant *value);
-    static JsonVariant *binaryToVariant(unsigned char * value);
+    const char * variantToBinary(JsonVariant *value);
+    static JsonVariant *binaryToVariant(char * value);
 
     static String variantToString(JsonVariant *value);
     static JsonVariant *stringToVariant(String value);

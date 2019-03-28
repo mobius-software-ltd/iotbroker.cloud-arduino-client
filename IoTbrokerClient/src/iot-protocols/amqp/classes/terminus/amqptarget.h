@@ -21,6 +21,7 @@
 #ifndef AMQPTARGET_H
 #define AMQPTARGET_H
 
+#include <StandardCplusplus.h>
 #include <map>
 #include <list>
 #include <cstdlib>
@@ -39,8 +40,8 @@ private:
     AMQPTerminusExpiryPolicy *expiryPeriod;
     JsonVariant *timeout;
     JsonVariant *dynamic;
-    map<JsonVariant *, JsonVariant *> dynamicNodeProperties;
-    list<JsonVariant *> capabilities;
+    std::map<JsonVariant *, JsonVariant *> dynamicNodeProperties;
+    std::list<JsonVariant *> capabilities;
 
 public:
     AMQPTarget();
@@ -49,7 +50,7 @@ public:
     void fill(AMQPTLVList *list);
 
     void addDynamicNodeProperties(String key, JsonVariant *value);
-    void addCapabilities(list<String> array);
+    void addCapabilities(std::list<String> array);
 
     String getAddress() const;
     void setAddress(const String &value);
@@ -61,10 +62,10 @@ public:
     void setTimeout(JsonVariant *value);
     JsonVariant *getDynamic() const;
     void setDynamic(JsonVariant *value);
-    map<JsonVariant *, JsonVariant *> getDynamicNodeProperties() const;
-    void setDynamicNodeProperties(const map<JsonVariant *, JsonVariant *> &value);
-    list<JsonVariant *> getCapabilities() const;
-    void setCapabilities(const list<JsonVariant *> &value);
+    std::map<JsonVariant *, JsonVariant *> getDynamicNodeProperties() const;
+    void setDynamicNodeProperties(const std::map<JsonVariant *, JsonVariant *> &value);
+    std::list<JsonVariant *> getCapabilities() const;
+    void setCapabilities(const std::list<JsonVariant *> &value);
 };
 
 #endif // AMQPTARGET_H

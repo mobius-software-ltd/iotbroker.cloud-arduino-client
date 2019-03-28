@@ -50,7 +50,7 @@ int AMQPTransfer::getLength()
     AMQPTLVList *arguments = this->arguments();
     length += arguments->getLength();
 
-    list<AMQPSection *> array = this->sections.values();
+    std::list<AMQPSection *> array = this->sections.values();
     foreach (AMQPSection *item, array) {
         length += item->getValue()->getLength();
     }
@@ -262,7 +262,7 @@ AMQPSection *AMQPTransfer::getFooter()
     return this->sections.value(sectionCode);
 }
 
-void AMQPTransfer::addSections(list<AMQPSection *> array)
+void AMQPTransfer::addSections(std::list<AMQPSection *> array)
 {
     foreach (AMQPSection *item, array) {
         this->sections.insert(item->getCode(), item);
@@ -379,12 +379,12 @@ void AMQPTransfer::setBatchable(JsonVariant *value)
     batchable = value;
 }
 
-map<AMQPSectionCode *, AMQPSection *> AMQPTransfer::getSections() const
+std::map<AMQPSectionCode *, AMQPSection *> AMQPTransfer::getSections() const
 {
     return sections;
 }
 
-void AMQPTransfer::setSections(const map<AMQPSectionCode *, AMQPSection *> &value)
+void AMQPTransfer::setSections(const std::map<AMQPSectionCode *, AMQPSection *> &value)
 {
     sections = value;
 }

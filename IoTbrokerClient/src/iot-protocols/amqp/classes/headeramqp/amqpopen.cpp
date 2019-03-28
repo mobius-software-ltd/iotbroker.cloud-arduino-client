@@ -25,17 +25,13 @@
 #include "iot-protocols/amqp/classes/tlv/fixed/amqptlvfixed.h"
 #include "iot-protocols/amqp/classes/tlv/fixed/amqptlvnull.h"
 #include "iot-protocols/amqp/classes/amqpsimpletype.h"
+#include "iot-protocols/amqp/classes/wrappers/amqpsymbol.h"
 
 AMQPOpen::AMQPOpen() : AMQPHeader(new AMQPHeaderCode(AMQP_OPEN_HEADER_CODE))
 {
     this->maxFrameSize = NULL;
     this->channelMax = NULL;
     this->idleTimeout = NULL;
-    this->outgoingLocales = list<JsonVariant *>();
-    this->incomingLocales = list<JsonVariant *>();
-    this->offeredCapabilities = list<JsonVariant *>();
-    this->desiredCapabilities = list<JsonVariant *>();
-    this->properties = map<JsonVariant *, JsonVariant *>();
 }
 
 int AMQPOpen::getLength()
@@ -73,23 +69,23 @@ AMQPTLVList *AMQPOpen::arguments()
     if (this->idleTimeout != NULL) {
         list->addElementWithIndex(4, AMQPWrapper::wrapUInt(AMQPSimpleType::variantToUInt(this->idleTimeout)));
     }
-    if (this->outgoingLocales.count() != 0) {
+    if (this->outgoingLocales.size() != 0) {
         list->addElementWithIndex(5, AMQPWrapper::wrapArray(this->outgoingLocales));
     }
-    if (this->incomingLocales.count() != 0) {
+    if (this->incomingLocales.size() != 0) {
         list->addElementWithIndex(6, AMQPWrapper::wrapArray(this->incomingLocales));
     }
-    if (this->offeredCapabilities.count() != 0) {
+    if (this->offeredCapabilities.size() != 0) {
         list->addElementWithIndex(7, AMQPWrapper::wrapArray(this->offeredCapabilities));
     }
-    if (this->desiredCapabilities.count() != 0) {
+    if (this->desiredCapabilities.size() != 0) {
         list->addElementWithIndex(8, AMQPWrapper::wrapArray(this->desiredCapabilities));
     }
-    if (this->properties.count() != 0) {
+    if (this->properties.size() != 0) {
         list->addElementWithIndex(9, AMQPWrapper::wrapMap(this->properties));
     }
 
-    unsigned char * data = malloc(sizeof(char));
+    unsigned char * data = (unsigned char *) malloc(sizeof(unsigned char));
     data[0] = this->code->getValue();
     AMQPType *type = new AMQPType(AMQP_SMALL_ULONG_TYPE);
     AMQPTLVFixed *fixed = new AMQPTLVFixed(type, data);
@@ -103,7 +99,7 @@ AMQPTLVList *AMQPOpen::arguments()
 
 void AMQPOpen::fillArguments(AMQPTLVList *list)
 {
-    int size = list->getList().count();
+    int size = list->getList().size();
 
     if (size == 0) {
         printf("AMQPOpen::fillArguments::size == 0");
@@ -177,50 +173,50 @@ void AMQPOpen::fillArguments(AMQPTLVList *list)
 }
 
 
-void AMQPOpen::addOutgoingLocale(list<String> array)
+void AMQPOpen::addOutgoingLocale(std::list<String> array)
 {
     std::list<String>::iterator it;
     for (it = array.begin(); it != array.end(); ++it){
         JsonVariant *variant;
-        variant.set(AMQPSimpleType::symbolToVariant(new AMQPSymbol(it)));
+        variant->set(AMQPSimpleType::symbolToVariant(new AMQPSymbol(*it)));
         this->outgoingLocales.push_back(variant);
     }
 }
 
-void AMQPOpen::addIncomingLocale(list<String> array)
+void AMQPOpen::addIncomingLocale(std::list<String> array)
 {
     std::list<String>::iterator it;
     for (it = array.begin(); it != array.end(); ++it){
         JsonVariant *variant;
-        variant.set(AMQPSimpleType::symbolToVariant(new AMQPSymbol(it)));
+        variant->set(AMQPSimpleType::symbolToVariant(new AMQPSymbol(*it)));
         this->incomingLocales.push_back(variant);
     }
 }
 
-void AMQPOpen::addOfferedCapability(list<String> array)
+void AMQPOpen::addOfferedCapability(std::list<String> array)
 {
     std::list<String>::iterator it;
     for (it = array.begin(); it != array.end(); ++it){
         JsonVariant *variant;
-        variant.set(AMQPSimpleType::symbolToVariant(new AMQPSymbol(it)));
+        variant->set(AMQPSimpleType::symbolToVariant(new AMQPSymbol(*it)));
         this->offeredCapabilities.push_back(variant);
     }
 }
 
-void AMQPOpen::addDesiredCapability(list<String> array)
+void AMQPOpen::addDesiredCapability(std::list<String> array)
 {
     std::list<String>::iterator it;
     for (it = array.begin(); it != array.end(); ++it){
         JsonVariant *variant;
-        variant.set(AMQPSimpleType::symbolToVariant(new AMQPSymbol(it)));
+        variant->set(AMQPSimpleType::symbolToVariant(new AMQPSymbol(*it)));
         this->desiredCapabilities.push_back(variant);
     }
 }
 
-void AMQPOpen::addProperty(String key, variant *value)
+void AMQPOpen::addProperty(String key, JsonVariant *value)
 {
     JsonVariant *variantKey;
-    variantKey.set(AMQPSimpleType::symbolToVariant(new AMQPSymbol(key)));
+    variantKey->set(AMQPSimpleType::symbolToVariant(new AMQPSymbol(key)));
     this->properties.insert(variantKey, value);
 }
 
@@ -274,52 +270,52 @@ void AMQPOpen::setIdleTimeout(JsonVariant *value)
     idleTimeout = value;
 }
 
-list<JsonVariant *> AMQPOpen::getOutgoingLocales() const
+std::list<JsonVariant *> AMQPOpen::getOutgoingLocales() const
 {
     return outgoingLocales;
 }
 
-void AMQPOpen::setOutgoingLocales(const list<JsonVariant *> &value)
+void AMQPOpen::setOutgoingLocales(const std::list<JsonVariant *> &value)
 {
     outgoingLocales = value;
 }
 
-list<JsonVariant *> AMQPOpen::getIncomingLocales() const
+std::list<JsonVariant *> AMQPOpen::getIncomingLocales() const
 {
     return incomingLocales;
 }
 
-void AMQPOpen::setIncomingLocales(const list<JsonVariant *> &value)
+void AMQPOpen::setIncomingLocales(const std::list<JsonVariant *> &value)
 {
     incomingLocales = value;
 }
 
-list<JsonVariant *> AMQPOpen::getOfferedCapabilities() const
+std::list<JsonVariant *> AMQPOpen::getOfferedCapabilities() const
 {
     return offeredCapabilities;
 }
 
-void AMQPOpen::setOfferedCapabilities(const list<JsonVariant *> &value)
+void AMQPOpen::setOfferedCapabilities(const std::list<JsonVariant *> &value)
 {
     offeredCapabilities = value;
 }
 
-list<JsonVariant *> AMQPOpen::getDesiredCapabilities() const
+std::list<JsonVariant *> AMQPOpen::getDesiredCapabilities() const
 {
     return desiredCapabilities;
 }
 
-void AMQPOpen::setDesiredCapabilities(const list<JsonVariant *> &value)
+void AMQPOpen::setDesiredCapabilities(const std::list<JsonVariant *> &value)
 {
     desiredCapabilities = value;
 }
 
-map<JsonVariant *, JsonVariant *> AMQPOpen::getProperties() const
+std::map<JsonVariant *, JsonVariant *> AMQPOpen::getProperties() const
 {
     return properties;
 }
 
-void AMQPOpen::setProperties(const map<JsonVariant *, JsonVariant *> &value)
+void AMQPOpen::setProperties(const std::map<JsonVariant *, JsonVariant *> &value)
 {
     properties = value;
 }

@@ -22,22 +22,22 @@
 
 EnumObject::EnumObject()
 {
-    std::map<int, String> this->map;
+
 }
 
-map<int, String> EnumObject::getMap() const
+std::map<int, String> EnumObject::getMap() const
 {
     return this->map;
 }
 
 String EnumObject::getName(int value)
 {
-    return this->map.value(value);
+    return this->map[value];
 }
 
-int EnumObject::getValue(string name)
+int EnumObject::getValue(String name)
 {
-    for (std::map<int,string>::iterator it=this->map.begin(); it!=this->map.end(); ++it){
+    for (std::map<int,String>::iterator it=this->map.begin(); it!=this->map.end(); ++it){
         if (it->second == name){
           return it->first;
         }

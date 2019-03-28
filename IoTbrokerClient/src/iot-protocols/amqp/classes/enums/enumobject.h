@@ -21,6 +21,7 @@
 #ifndef ENUMOBJECT_H
 #define ENUMOBJECT_H
 
+#include <StandardCplusplus.h>
 #include <map>
 #include <WString.h>
 

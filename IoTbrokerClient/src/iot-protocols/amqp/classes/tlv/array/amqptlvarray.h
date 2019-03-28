@@ -21,6 +21,7 @@
 #ifndef AMQPTLVARRAY_H
 #define AMQPTLVARRAY_H
 
+#include <StandardCplusplus.h>
 #include <vector>
 #include <cstring>
 #include <cstdlib>
@@ -35,12 +36,12 @@ private:
     int size;
     int count;
 
-    vector<TLVAMQP *> elements;
+    std::vector<TLVAMQP *> elements;
     AMQPSimpleConstructor *elementContructor;
 
 public:
     AMQPTLVArray();
-    AMQPTLVArray(AMQPType *type, vector<TLVAMQP *>elements);
+    AMQPTLVArray(AMQPType *type, std::vector<TLVAMQP *>elements);
 
     virtual bool isNull();
     virtual unsigned char * getData();
@@ -53,7 +54,7 @@ public:
     int getWidth() const;
     int getSize() const;
     int getCount() const;
-    vector<TLVAMQP *> getElements() const;
+    std::vector<TLVAMQP *> getElements() const;
     AMQPSimpleConstructor *getElementContructor() const;
 };
 

@@ -24,14 +24,13 @@
 #include "iot-protocols/amqp/classes/enums/amqptype.h"
 #include "iot-protocols/amqp/classes/constructors/amqpsimpleconstructor.h"
 
-class TLVAMQP : public QObject
+class TLVAMQP
 {
-protected:
 
+protected:
     AMQPType *type;
     AMQPSimpleConstructor *constructor;
     unsigned char * value;
-
 public:
     TLVAMQP(AMQPSimpleConstructor *constructor);
 

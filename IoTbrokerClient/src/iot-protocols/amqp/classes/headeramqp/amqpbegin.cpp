@@ -25,6 +25,7 @@
 #include "iot-protocols/amqp/classes/tlv/fixed/amqptlvfixed.h"
 #include "iot-protocols/amqp/classes/tlv/fixed/amqptlvnull.h"
 #include "iot-protocols/amqp/classes/amqpsimpletype.h"
+#include "iot-protocols/amqp/classes/wrappers/amqpsymbol.h"
 
 AMQPBegin::AMQPBegin() : AMQPHeader(new AMQPHeaderCode(AMQP_BEGIN_HEADER_CODE))
 {
@@ -33,9 +34,6 @@ AMQPBegin::AMQPBegin() : AMQPHeader(new AMQPHeaderCode(AMQP_BEGIN_HEADER_CODE))
     this->incomingWindow = NULL;
     this->outgoingWindow = NULL;
     this->handleMax = NULL;
-    this->offeredCapabilities =  NULL;
-    this->desiredCapabilities =  NULL;
-    this->properties =  NULL;
 }
 
 int AMQPBegin::getLength()
@@ -76,17 +74,17 @@ AMQPTLVList *AMQPBegin::arguments()
     if (this->handleMax != NULL) {
         list->addElementWithIndex(4, AMQPWrapper::wrapUInt(AMQPSimpleType::variantToUInt(this->handleMax)));
     }
-    if (this->offeredCapabilities.count() != 0) {
+    if (this->offeredCapabilities.size() != 0) {
         list->addElementWithIndex(5, AMQPWrapper::wrapArray(this->offeredCapabilities));
     }
-    if (this->desiredCapabilities.count() != 0) {
+    if (this->desiredCapabilities.size() != 0) {
         list->addElementWithIndex(6, AMQPWrapper::wrapArray(this->desiredCapabilities));
     }
-    if (this->properties.count() != 0) {
+    if (this->properties.size() != 0) {
         list->addElementWithIndex(7, AMQPWrapper::wrapMap(this->properties));
     }
 
-    unsigned char * data = malloc(sizeof(char));
+    unsigned char * data = (unsigned char *) malloc(sizeof(unsigned char));
     data[0] = this->code->getValue();
     AMQPType *type = new AMQPType(AMQP_SMALL_ULONG_TYPE);
     AMQPTLVFixed *fixed = new AMQPTLVFixed(type, data);
@@ -100,7 +98,7 @@ AMQPTLVList *AMQPBegin::arguments()
 
 void AMQPBegin::fillArguments(AMQPTLVList *list)
 {
-    int size = list->getList().count();
+    int size = list->getList().size();
 
     if (size < 4) {
         printf("AMQPBegin::fillArguments::size == 0");
@@ -138,7 +136,7 @@ void AMQPBegin::fillArguments(AMQPTLVList *list)
         this->outgoingWindow = AMQPSimpleType::UIntToVariant(AMQPUnwrapper::unwrapUInt(element));
     }
     if (size > 4) {
-        TLVAMQP *element = list->getList().[4];
+        TLVAMQP *element = list->getList()[4];
         if (!element->isNull()) {
             this->handleMax = AMQPSimpleType::UIntToVariant(AMQPUnwrapper::unwrapUInt(element));
         }
@@ -163,27 +161,27 @@ void AMQPBegin::fillArguments(AMQPTLVList *list)
     }
 }
 
-void AMQPBegin::addOfferedCapability(list<String> list)
+void AMQPBegin::addOfferedCapability(std::list<String> list)
 {
     std::list<String>::iterator it;
-    for (it = array.begin(); it != array.end(); ++it){
-        JsonVariant *variant = AMQPSimpleType::symbolToVariant(new AMQPSymbol(it));
+    for (it = list.begin(); it != list.end(); ++it){
+        JsonVariant *variant = AMQPSimpleType::symbolToVariant(new AMQPSymbol(*it));
         this->offeredCapabilities.push_back(variant);
     }
 }
 
-void AMQPBegin::addDesiredCapability(list<String> list)
+void AMQPBegin::addDesiredCapability(std::list<String> list)
 {
     std::list<String>::iterator it;
-    for (it = array.begin(); it != array.end(); ++it){
-        JsonVariant *variant = AMQPSimpleType::symbolToVariant(new AMQPSymbol(it));
+    for (it = list.begin(); it != list.end(); ++it){
+        JsonVariant *variant = AMQPSimpleType::symbolToVariant(new AMQPSymbol(*it));
         this->desiredCapabilities.push_back(variant);
     }
 }
 
-void AMQPBegin::addProperty(String key, variant *value)
+void AMQPBegin::addProperty(String key, JsonVariant *value)
 {
-    JsonVariant *variantKey = AMQPSimpleType::symbolToVariant(new AMQPSymbol(key));
+    JsonVariant variantKey = AMQPSimpleType::symbolToVariant(new AMQPSymbol(key));
     this->properties.insert(variantKey, value);
 }
 
@@ -237,32 +235,32 @@ void AMQPBegin::setHandleMax(JsonVariant *value)
     handleMax = value;
 }
 
-list<JsonVariant *> AMQPBegin::getOfferedCapabilities() const
+std::list<JsonVariant *> AMQPBegin::getOfferedCapabilities() const
 {
     return offeredCapabilities;
 }
 
-void AMQPBegin::setOfferedCapabilities(const list<JsonVariant *> &value)
+void AMQPBegin::setOfferedCapabilities(const std::list<JsonVariant *> &value)
 {
     offeredCapabilities = value;
 }
 
-list<JsonVariant *> AMQPBegin::getDesiredCapabilities() const
+std::list<JsonVariant *> AMQPBegin::getDesiredCapabilities() const
 {
     return desiredCapabilities;
 }
 
-void AMQPBegin::setDesiredCapabilities(const list<JsonVariant *> &value)
+void AMQPBegin::setDesiredCapabilities(const std::list<JsonVariant *> &value)
 {
     desiredCapabilities = value;
 }
 
-map<JsonVariant *, JsonVariant *> AMQPBegin::getProperties() const
+std::map<JsonVariant *, JsonVariant *> AMQPBegin::getProperties() const
 {
     return properties;
 }
 
-void AMQPBegin::setProperties(const map<JsonVariant *, JsonVariant *> &value)
+void AMQPBegin::setProperties(const std::map<JsonVariant *, JsonVariant *> &value)
 {
     properties = value;
 }

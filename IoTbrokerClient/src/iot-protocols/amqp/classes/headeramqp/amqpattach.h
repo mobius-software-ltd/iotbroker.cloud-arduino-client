@@ -21,6 +21,8 @@
 #ifndef AMQPATTACH_H
 #define AMQPATTACH_H
 
+#include <ArduinoJson.h>
+#include <StandardCplusplus.h>
 #include <map>
 #include <list>
 #include "iot-protocols/amqp/classes/headerapi/amqpheader.h"
@@ -35,19 +37,19 @@ class AMQPAttach : public AMQPHeader
 {
 private:
     String name;
-    JsonJsonVariant *handle;
+    JsonVariant *handle;
     AMQPRoleCode *role;
     AMQPSendCode *sendCodes;
     AMQPReceiverSettleMode *receivedCodes;
     AMQPSource *source;
     AMQPTarget *target;
-    map<JsonJsonVariant *, JsonJsonVariant *> unsettled;
-    JsonJsonVariant *incompleteUnsettled;
-    JsonJsonVariant *initialDeliveryCount;
-    JsonJsonVariant *maxMessageSize;
-    list<JsonJsonVariant *> offeredCapabilities;
-    list<JsonJsonVariant *> desiredCapabilities;
-    map<JsonJsonVariant *, JsonJsonVariant *> properties;
+    std::map<JsonVariant *, JsonVariant *> unsettled;
+    JsonVariant *incompleteUnsettled;
+    JsonVariant *initialDeliveryCount;
+    JsonVariant *maxMessageSize;
+    std::list<JsonVariant *> offeredCapabilities;
+    std::list<JsonVariant *> desiredCapabilities;
+    std::map<JsonVariant *, JsonVariant *> properties;
 
 public:
     AMQPAttach();
@@ -58,16 +60,16 @@ public:
     virtual AMQPTLVList *arguments();
     virtual void fillArguments(AMQPTLVList *list);
 
-    void addUnsettled(String key, JsonJsonVariant *value);
+    void addUnsettled(String key, JsonVariant *value);
     void addOfferedCapability(list<String> array);
     void addDesiredCapability(list<String> array);
-    void addProperty(String key, JsonJsonVariant *value);
+    void addProperty(String key, JsonVariant *value);
 
     String getName() const;
     void setName(const String &value);
 
-    JsonJsonVariant *getHandle() const;
-    void setHandle(JsonJsonVariant *value);
+    JsonVariant *getHandle() const;
+    void setHandle(JsonVariant *value);
 
     AMQPRoleCode *getRole() const;
     void setRole(AMQPRoleCode *value);
@@ -84,8 +86,8 @@ public:
     AMQPTarget *getTarget() const;
     void setTarget(AMQPTarget *value);
 
-    map<JsonVariant *, JsonVariant *> getUnsettled() const;
-    void setUnsettled(const map<JsonVariant *, JsonVariant *> &value);
+    std::map<JsonVariant *, JsonVariant *> getUnsettled() const;
+    void setUnsettled(const std::map<JsonVariant *, JsonVariant *> &value);
 
     JsonVariant *getIncompleteUnsettled() const;
     void setIncompleteUnsettled(JsonVariant *value);
@@ -102,8 +104,8 @@ public:
     list<JsonVariant *> getDesiredCapabilities() const;
     void setDesiredCapabilities(const list<JsonVariant *> &value);
 
-    map<JsonVariant *, JsonVariant *> getProperties() const;
-    void setProperties(const map<JsonVariant *, JsonVariant *> &value);
+    std::map<JsonVariant *, JsonVariant *> getProperties() const;
+    void setProperties(const std::map<JsonVariant *, JsonVariant *> &value);
 };
 
 #endif // AMQPATTACH_H

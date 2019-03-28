@@ -27,7 +27,7 @@ AMQPError::AMQPError()
 {
     this->condition = new AMQPErrorCode();
     this->descriptionString;
-    this->info = map<JsonVariant *, JsonVariant *>();
+    this->info = std::map<JsonVariant *, JsonVariant *>();
 }
 
 void AMQPError::fill(AMQPTLVList *list)
@@ -112,7 +112,7 @@ void AMQPError::setDescriptionString(const String &value)
     descriptionString = value;
 }
 
-map<JsonVariant *, JsonVariant *> AMQPError::getInfo() const
+std::map<JsonVariant *, JsonVariant *> AMQPError::getInfo() const
 {
     return info;
 }

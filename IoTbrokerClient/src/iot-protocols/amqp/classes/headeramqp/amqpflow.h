@@ -21,6 +21,8 @@
 #ifndef AMQPFLOW_H
 #define AMQPFLOW_H
 
+#include <ArduinoJson.h>
+#include <StandardCplusplus.h>
 #include <map>
 #include "iot-protocols/amqp/classes/headerapi/amqpheader.h"
 
@@ -38,7 +40,7 @@ private:
     JsonVariant *avaliable;
     JsonVariant *drain;
     JsonVariant *echo;
-    map<JsonVariant *, JsonVariant *> properties;
+    std::map<JsonVariant *, JsonVariant *> properties;
 
 public:
     AMQPFlow();
@@ -81,9 +83,9 @@ public:
     JsonVariant *getEcho() const;
     void setEcho(JsonVariant *value);
 
-    map<JsonVariant *, JsonVariant *> getProperties() const;
+    std::map<JsonVariant *, JsonVariant *> getProperties() const;
 
-    void setProperties(const map<JsonVariant *, JsonVariant *> &value);
+    void setProperties(const std::map<JsonVariant *, JsonVariant *> &value);
 };
 
 #endif // AMQPFLOW_H

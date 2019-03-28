@@ -28,7 +28,7 @@ AMQPTLVArray::AMQPTLVArray() : TLVAMQP(new AMQPSimpleConstructor(new AMQPType(AM
     this->size = 0;
 }
 
-AMQPTLVArray::AMQPTLVArray(AMQPType *type, vector<TLVAMQP *>elements) : TLVAMQP(new AMQPSimpleConstructor(type))
+AMQPTLVArray::AMQPTLVArray(AMQPType *type, std::vector<TLVAMQP *>elements) : TLVAMQP(new AMQPSimpleConstructor(type))
 {
     this->elements = elements;
     this->width = type->getValue() == AMQP_ARRAY8_TYPE ? 1 : 4;
@@ -168,7 +168,7 @@ int AMQPTLVArray::getCount() const
     return count;
 }
 
-vector<TLVAMQP *> AMQPTLVArray::getElements() const
+std::vector<TLVAMQP *> AMQPTLVArray::getElements() const
 {
     return elements;
 }

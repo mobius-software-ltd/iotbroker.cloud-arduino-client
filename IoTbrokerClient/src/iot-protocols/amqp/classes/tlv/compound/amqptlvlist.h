@@ -21,6 +21,7 @@
 #ifndef AMQPTLVLIST_H
 #define AMQPTLVLIST_H
 
+#include <StandardCplusplus.h>
 #include <vector>
 #include <cstring>
 #include <cstdlib>
@@ -34,13 +35,13 @@ private:
     int size;
     int count;
 
-    vector<TLVAMQP *> list;
+    std::vector<TLVAMQP *> list;
 
     void update();
 
 public:
     AMQPTLVList();
-    AMQPTLVList(AMQPType *type, vector<TLVAMQP *> value);
+    AMQPTLVList(AMQPType *type, std::vector<TLVAMQP *> value);
 
     virtual unsigned char * getData();
     virtual int getLength();
@@ -58,7 +59,7 @@ public:
     int getWidth() const;
     int getSize() const;
     int getCount() const;
-    vector<TLVAMQP *> getList() const;
+    std::vector<TLVAMQP *> getList() const;
 };
 
 #endif // AMQPTLVLIST_H
