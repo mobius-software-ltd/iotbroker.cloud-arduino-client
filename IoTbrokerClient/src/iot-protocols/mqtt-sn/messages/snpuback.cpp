@@ -1,0 +1,78 @@
+/**
+ * Mobius Software LTD
+ * Copyright 2015-2018, Mobius Software LTD
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
+#include "snpuback.h"
+
+SNPuback::SNPuback()
+{
+
+}
+
+SNPuback::SNPuback(int topicID, int packetID, SNReturnCode code)
+{
+    this->topicID = topicID;
+    this->setPacketID(packetID);
+    this->code = code;
+}
+
+int SNPuback::getLength()
+{
+    return 7;
+}
+
+int SNPuback::getType()
+{
+    return SN_PUBACK;
+}
+
+IotEnumProtocol *SNPuback::getProtocol()
+{
+    return new IotEnumProtocol(MQTT_SN_PROTOCOL);
+}
+
+int SNPuback::getPacketID()
+{
+    return this->packetID;
+}
+
+void SNPuback::setPacketID(int packetID)
+{
+    this->packetID = packetID;
+}
+
+int SNPuback::getTopicID() const
+{
+    return topicID;
+}
+
+void SNPuback::setTopicID(int value)
+{
+    topicID = value;
+}
+
+SNReturnCode SNPuback::getCode() const
+{
+    return code;
+}
+
+void SNPuback::setCode(const SNReturnCode &value)
+{
+    code = value;
+}

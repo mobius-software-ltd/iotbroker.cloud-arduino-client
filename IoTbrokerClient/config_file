@@ -1,0 +1,46 @@
+#protocol MQTT(0), MQTTSN(1), COAP(2), AMQP(3), WS(4)
+protocol:0
+
+#username
+username:user@example.com
+#password
+password:paZZword
+#clientID
+clientId:user99
+#host
+host:broker.iotbroker.cloud
+#port
+port:1883
+
+#cleanSession
+cleanSession:True
+#keepAlive
+keepAlive:100
+#will
+will:
+#willTopic
+willTopic:
+#retain
+retain:False
+#QoS of will message
+qos:0
+
+#enabled security
+isSecure:False
+#certificate+key path
+certKeyPath:./cert.pem
+certPassword:
+
+#topic name
+topicName:/temperature/
+#qos of message
+messageQos:0
+#uses only in MQTT/MQTT-SN/WS
+messageRetain:False
+#uses only in MQTT/MQTT-SN/WS
+messageDup:False
+
+#period of message sending (in sec)
+period:60
+
+#END
